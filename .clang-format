@@ -1,0 +1,21 @@
+Language: Cpp
+BasedOnStyle: Microsoft
+BreakBeforeBraces: Allman
+UseTab: Never
+IndentWidth: 4
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+ColumnLimit: '140'
+AccessModifierOffset: '-4'
+SortIncludes: false
+AllowShortBlocksOnASingleLine: false
+AlignAfterOpenBracket: DontAlign
+AllowShortFunctionsOnASingleLine: Inline
+PointerAlignment: Left
+AllowShortIfStatementsOnASingleLine: true
+SpacesBeforeTrailingComments: 2
+AllowShortCaseLabelsOnASingleLine: true
+IndentCaseLabels: true
+AlwaysBreakTemplateDeclarations: Yes
