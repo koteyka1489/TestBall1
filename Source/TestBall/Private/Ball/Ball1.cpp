@@ -8,8 +8,6 @@
 #include "Cage/Cage.h"
 #include "Kismet/GameplayStatics.h"
 
-
-
 // Sets default values
 ABall1::ABall1()
 {
@@ -41,7 +39,7 @@ void ABall1::HandleOnHit(
     if (Player && Player->IsRedyToShoot())
     {
         OnBallHit.Broadcast();
-  
+
         FVector VectorAngularVelocityInDegrees          = StaticMeshComponent->GetPhysicsAngularVelocityInDegrees();
         FVector VectorAngularVelocityInDegreesNormalize = VectorAngularVelocityInDegrees.GetSafeNormal();
 
@@ -50,7 +48,7 @@ void ABall1::HandleOnHit(
         float YVectorRand    = FMath::FRandRange(0.0f, 100.0f);
         float ZVectorRand    = FMath::FRandRange(300.0f, 600.0f);
         FVector VectorRandOfset(XVectorRand, YVectorRand, ZVectorRand);
-        
+
         FVector VectorToGoal          = VectorToCage + VectorOffset + VectorRandOfset;
         FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
 
@@ -69,6 +67,3 @@ FVector ABall1::GetVectorCageLocation()
 
     return FVector::Zero();
 }
-
-
-
