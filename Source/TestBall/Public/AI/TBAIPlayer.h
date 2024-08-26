@@ -16,4 +16,7 @@ class TESTBALL_API ATBAIPlayer : public ATBPlayer
 	
 	public:
     ATBAIPlayer();
+
+	void MoveToTarget(FVector Location);
+
 };

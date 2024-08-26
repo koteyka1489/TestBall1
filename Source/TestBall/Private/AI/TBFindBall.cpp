@@ -1,23 +1,30 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AI/TBFindBall.h"
+#include "AI\TBAIPlayer.h"
 
 UTBFindBall::UTBFindBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer)
 {
-    UE_LOG(LogTemp, Warning, TEXT("FIND BAll Constructor"));
+    // UE_LOG(LogTemp, Warning, TEXT("FIND BAll Constructor"));
 }
 
 EStateTreeRunStatus UTBFindBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
-    UE_LOG(LogTemp, Warning, TEXT("FIND BALL Enter STATE"));
+
     Super::EnterState(Context, Transition);
     return RunStatus;
 }
 
 EStateTreeRunStatus UTBFindBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-    UE_LOG(LogTemp, Warning, TEXT("FIND BALL TICK"));
+    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
+    if (ActorAI)
+    {
+        ActorAI->SetClosebleBall();
+        ClosestBallLocation = ActorAI->GetClosebleBallLocation();
+        //UE_LOG(LogTemp, Warning, TEXT("CloseBall %s"), *CloseBall.ToString());
+    }
+
     Super::Tick(Context, DeltaTime);
     return RunStatus;
 }

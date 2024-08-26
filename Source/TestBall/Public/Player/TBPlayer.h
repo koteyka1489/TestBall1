@@ -28,13 +28,16 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Ball")
     FVector GetClosebleBallLocation();
 
+     UFUNCTION(BlueprintCallable, Category = "Ball")
+    float GetDistanceToCloseballBall();
+
     UFUNCTION(BlueprintCallable, Category = "Ball")
     bool GetPlayerHitedBall();
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
     bool SetPlayerHitedBall(bool in);
 
-
+    void SetClosebleBall();
 
 protected:
     virtual void BeginPlay() override;
@@ -63,6 +66,8 @@ protected:
     UPROPERTY()
     TObjectPtr<ABall1> ClosebleBall = nullptr;
 
+    
+
 public:
     virtual void Tick(float DeltaTime) override;
 
@@ -79,7 +84,7 @@ private:
     void MoveToBall();
     void InitAnimationNotify();
     void OnShootAnimationFinished();
-    void SetClosebleBall();
+    
     void OnBallHit();
     void LockCamera();
 

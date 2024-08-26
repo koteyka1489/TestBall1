@@ -36,6 +36,11 @@ FVector ATBPlayer::GetClosebleBallLocation()
     return ClosebleBall->GetActorLocation();
 }
 
+float ATBPlayer::GetDistanceToCloseballBall()
+{
+    return (GetClosebleBallLocation() - GetActorLocation()).Length();
+}
+
 bool ATBPlayer::GetPlayerHitedBall()
 {
     return IsPlayerHitedBall;
