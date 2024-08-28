@@ -14,7 +14,7 @@ void ATBAIPlayer::MoveToTarget(FVector Location)
     AAIController* AiController = Cast<AAIController>(GetController());
     if (AiController)
     {
-
-        AiController->MoveToLocation(Location);
+       AiController->MoveToLocation(Location);
     }
+    
 }

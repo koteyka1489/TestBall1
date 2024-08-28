@@ -41,14 +41,20 @@ float ATBPlayer::GetDistanceToCloseballBall()
     return (GetClosebleBallLocation() - GetActorLocation()).Length();
 }
 
-bool ATBPlayer::GetPlayerHitedBall()
-{
-    return IsPlayerHitedBall;
-}
 
-bool ATBPlayer::SetPlayerHitedBall(bool in)
+FVector ATBPlayer::FindVecMoveToShootBallPosition()
 {
-    return IsPlayerHitedBall = in;
+    FVector VecToBall = GetClosebleBallLocation() - GetActorLocation();
+
+    float VecToBallLenght = VecToBall.Length();
+
+    float GoalVecLenght = VecToBallLenght - ShootTheBallDistance;
+
+    FVector VecToBallNormalize = VecToBall.GetSafeNormal();
+
+    FVector Result = VecToBallNormalize * GoalVecLenght;
+
+    return Result;
 }
 
 // Called when the game starts or when spawned
@@ -80,7 +86,7 @@ void ATBPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     PlayerInputComponent->BindAxis("MoveRight", this, &ATBPlayer::MoveRight);
     PlayerInputComponent->BindAxis("LookUp", this, &ATBPlayer::AddControllerPitchInput);
     PlayerInputComponent->BindAxis("LookRight", this, &ATBPlayer::AddControllerYawInput);
-    PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &ATBPlayer::Shoot);
+    PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &ATBPlayer::MoveToBallAndShoot);
 }
 
 void ATBPlayer::MoveForward(float Amount)
@@ -93,22 +99,18 @@ void ATBPlayer::MoveRight(float Amount)
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
-void ATBPlayer::Shoot()
+bool ATBPlayer::Shoot(float VecToBallLenght)
 {
-    SetClosebleBall();
-
-    VectorToBall    = ClosebleBall->GetActorLocation() - this->GetActorLocation();
-    float VecLenght = VectorToBall.Length();
-    IsMovingToBall  = true;
-    
-
-    ClosebleBall->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
-    if (VecLenght <= ShotTheBallDistance + 20.0f)
+    if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
     {
+        ClosebleBall->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
         ReadyToShoot = true;
         LockCamera();
         PlayAnimMontage(ShotAnimMontage);
+        ShootAnimationExecuted = true;
+        return true;
     }
+    return false;
 }
 
 void ATBPlayer::CheckBallLocationandDirection(ABall1* Ball)
@@ -144,7 +146,7 @@ void ATBPlayer::CheckBallLocation(ABall1* Ball)
     VectorToBall    = Ball->GetActorLocation() - this->GetActorLocation();
     float VecLenght = VectorToBall.Length();
 
-    if (VecLenght >= ShotTheBallDistance && VecLenght <= MaxDistanceToMoveTheBall)
+    if (VecLenght >= ShootTheBallDistance && VecLenght <= MaxDistanceToMoveTheBall)
     {
         BallIsCloseLocation = true;
     }
@@ -157,7 +159,7 @@ void ATBPlayer::CheckBallLocation(ABall1* Ball)
 void ATBPlayer::MoveToBall()
 {
     VectorToBall = ClosebleBall->GetActorLocation() - this->GetActorLocation();
-    if (VectorToBall.Length() > ShotTheBallDistance)
+    if (VectorToBall.Length() > ShootTheBallDistance)
     {
         AddMovementInput(VectorToBall.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
     }
@@ -189,6 +191,25 @@ void ATBPlayer::OnShootAnimationFinished()
 {
     GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString("Shooting AnimationEnd"));
     ReadyToShoot = false;
+    ShootAnimationExecuted = false;
+}
+
+void ATBPlayer::CheckMoveToBall()
+{
+    SetClosebleBall();
+
+    VectorToBall    = ClosebleBall->GetActorLocation() - this->GetActorLocation();
+    float VecLenght = VectorToBall.Length();
+    if (VecLenght > ShootTheBallDistance)
+    {
+        IsMovingToBall = true;
+    }
+}
+
+void ATBPlayer::MoveToBallAndShoot()
+{
+    CheckMoveToBall();
+    Shoot(GetDistanceToCloseballBall());
 }
 
 void ATBPlayer::SetClosebleBall()
@@ -222,9 +243,10 @@ void ATBPlayer::SetClosebleBall()
     }
 }
 
-void ATBPlayer::OnBallHit()
+
+void ATBPlayer::OnBallHit() 
 {
-    IsPlayerHitedBall = true;
+
 }
 
 void ATBPlayer::LockCamera()

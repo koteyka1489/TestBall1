@@ -5,13 +5,6 @@
 
 USTTaskTBMoveToBall::USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
-EStateTreeRunStatus USTTaskTBMoveToBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
-{
-    UE_LOG(LogTemp, Warning, TEXT("MOVE TO BALL Enter STATE"));
-
-    return RunStatus;
-}
-
 EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
     UE_LOG(LogTemp, Warning, TEXT("Move To BALL Tick STATE"));
@@ -21,14 +14,22 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
     {
         ActorAI->SetClosebleBall();
 
-        ActorAI->MoveToTarget(ActorAI->GetClosebleBallLocation());
+        FVector Target = ActorAI->GetActorLocation() + ActorAI->FindVecMoveToShootBallPosition();
+        ActorAI->MoveToTarget(Target);
+
+        
     }
 
-    if (ActorAI->GetDistanceToCloseballBall() < 100.f)
+    UE_LOG(LogTemp, Display, TEXT("GetDistanceToCloseballBall() %f"), ActorAI->GetDistanceToCloseballBall());
+    UE_LOG(LogTemp, Display, TEXT("GetShootTheBallDistance() %f"), ActorAI->GetShootTheBallDistance());
+
+
+    if (ActorAI->GetDistanceToCloseballBall() < ActorAI->GetShootTheBallDistance() + 50.0)
     {
+        UE_LOG(LogTemp, Display, TEXT("Finish Task %f"), ActorAI->GetShootTheBallDistance() + 50.0);
         FinishTask();
-        //return EStateTreeRunStatus::Succeeded;
     }
 
+    Super::Tick(Context, DeltaTime);
     return RunStatus;
 }

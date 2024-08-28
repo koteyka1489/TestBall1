@@ -31,13 +31,14 @@ public:
      UFUNCTION(BlueprintCallable, Category = "Ball")
     float GetDistanceToCloseballBall();
 
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    bool GetPlayerHitedBall();
+    FVector FindVecMoveToShootBallPosition();
 
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    bool SetPlayerHitedBall(bool in);
+    float GetShootTheBallDistance() { return ShootTheBallDistance; }
 
     void SetClosebleBall();
+    bool Shoot(float VecToBallLenght);
+    void MoveToBall();
+    bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
 
 protected:
     virtual void BeginPlay() override;
@@ -52,7 +53,7 @@ protected:
     UAnimMontage* ShotAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    float ShotTheBallDistance = 115.0f;
+    float ShootTheBallDistance = 135.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
@@ -77,13 +78,14 @@ public:
 private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
-    void Shoot();
     void CheckBallLocationandDirection(ABall1* Ball);
     void CheckPlayerToBallDirection(ABall1* Ball);
     void CheckBallLocation(ABall1* Ball);
-    void MoveToBall();
+    
     void InitAnimationNotify();
     void OnShootAnimationFinished();
+    void CheckMoveToBall();
+    void MoveToBallAndShoot();
     
     void OnBallHit();
     void LockCamera();
@@ -92,6 +94,6 @@ private:
     bool BallIsForward       = false;
     bool BallIsCloseLocation = false;
     bool ReadyToShoot        = false;
-    bool IsPlayerHitedBall     = false;
+    bool ShootAnimationExecuted     = false;
     FVector VectorToBall     = FVector::ZeroVector;
 };
