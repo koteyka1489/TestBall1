@@ -61,6 +61,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     bool LockCameraOnShoot = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    int32 NTeam = 0;
+
     UPROPERTY()
     TArray<AActor*> Balls;
 

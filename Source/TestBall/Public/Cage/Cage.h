@@ -22,6 +22,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UTBStaticMeshComponent* StaticMeshComponent;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cage")
+    int32 NCage = 0;
+
 public:
     virtual void Tick(float DeltaTime) override;
 };

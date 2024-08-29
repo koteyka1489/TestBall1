@@ -6,7 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "TBAnimNotify.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FONNotifiedSignature)
+DECLARE_MULTICAST_DELEGATE(FONNotifiedSignature);
 
 UCLASS()
 class TESTBALL_API UTBAnimNotify : public UAnimNotify
