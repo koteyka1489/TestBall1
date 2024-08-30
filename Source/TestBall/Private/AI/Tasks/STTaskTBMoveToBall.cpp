@@ -18,11 +18,9 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
 
     }
 
-
-
     if (ActorAI->GetDistanceToBall() < ActorAI->GetShootTheBallDistance() + 50.0)
     {
-        UE_LOG(LogTemp, Display, TEXT("Finish Task %f"), ActorAI->GetShootTheBallDistance() + 50.0);
+        
         FinishTask();
     }
 

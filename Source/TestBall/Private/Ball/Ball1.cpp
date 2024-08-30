@@ -37,7 +37,12 @@ void ABall1::Tick(float DeltaTime)
 void ABall1::HandleOnHit(
     UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+
+    FVector LinearVelCalc = StaticMeshComponent->GetPhysicsLinearVelocity();
+    FVector AngularVelCalc = StaticMeshComponent->GetPhysicsAngularVelocityInDegrees();
+
     auto Player = Cast<ATBPlayer>(OtherActor);
+
     if (Player && Player->IsRedyToShoot())
     {
         OnBallHit.Broadcast();
@@ -53,4 +58,11 @@ void ABall1::HandleOnHit(
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }
+
+    if (Player && !Player->IsRedyToShoot())
+    {
+        StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
+    }
+
 }
