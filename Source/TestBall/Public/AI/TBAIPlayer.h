@@ -6,7 +6,8 @@
 #include "Player/TBPlayer.h"
 #include "TBAIPlayer.generated.h"
 
-/**
+class ATBAIController;
+    /**
  * 
  */
 UCLASS()
@@ -18,5 +19,7 @@ class TESTBALL_API ATBAIPlayer : public ATBPlayer
     ATBAIPlayer();
 
 	void MoveToTarget(FVector Location);
+
+
 
 };

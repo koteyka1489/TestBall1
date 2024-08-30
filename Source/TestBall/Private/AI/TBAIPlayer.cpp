@@ -11,10 +11,10 @@ ATBAIPlayer::ATBAIPlayer()
 
 void ATBAIPlayer::MoveToTarget(FVector Location)
 {
-    AAIController* AiController = Cast<AAIController>(GetController());
-    if (AiController)
+    ATBAIController* AiControllerComp = Cast<ATBAIController>(GetController());
+    if (AiControllerComp)
     {
-       AiController->MoveToLocation(Location);
+        AiControllerComp->MoveToLocation(Location);
     }
     
 }
