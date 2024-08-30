@@ -19,7 +19,7 @@ class TESTBALL_API ATBAIPlayer : public ATBPlayer
     ATBAIPlayer();
 
 	void MoveToTarget(FVector Location);
-
+    virtual bool Shoot(float VecToBallLenght) override;
 
 
 };

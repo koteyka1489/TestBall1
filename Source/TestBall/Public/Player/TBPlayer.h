@@ -49,7 +49,7 @@ public:
     
     ShootingData GetShootingData();
 
-    bool Shoot(float VecToBallLenght);
+    virtual bool Shoot(float VecToBallLenght);
     void MoveToBall();
     bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
 

@@ -2,6 +2,7 @@
 
 #include "AI/TBAIPlayer.h"
 #include "AI\TBAIController.h"
+#include "Ball\Ball1.h"
 
 ATBAIPlayer::ATBAIPlayer()
 {
@@ -17,6 +18,12 @@ void ATBAIPlayer::MoveToTarget(FVector Location)
         AiControllerComp->MoveToLocation(Location);
     }
     
+}
+
+bool ATBAIPlayer::Shoot(float VecToBallLenght)
+{
+
+    return Super::Shoot(VecToBallLenght);
 }
 
 
