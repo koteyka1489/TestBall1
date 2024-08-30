@@ -44,6 +44,12 @@ void ABall1::HandleOnHit(
 
         ShootingData ShootingData = Player->GetShootingData();
 
+        
+        FString Message  = FString::Printf(TEXT("ShootingDirection -  %s"), *ShootingData.ShootingDirection.ToString());
+        FString Message1 = FString::Printf(TEXT("ShootingRotation -  %s"), *ShootingData.ShootingRotation.ToString());
+        GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, Message);
+        GEngine->AddOnScreenDebugMessage(2, 5, FColor::Red, Message1);
+
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }

@@ -87,7 +87,7 @@ protected:
     ABall1* Ball = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float ShootingStrench = 1000;
+    float ShootingStrench = 5000;
 
    
 

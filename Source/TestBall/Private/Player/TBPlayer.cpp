@@ -105,8 +105,15 @@ ShootingData ATBPlayer::GetShootingData()
     FVector VectorAngularVelocityInDegrees = Ball->GetStaticMeshComponent()->GetPhysicsAngularVelocityInDegrees();
     Result.ShootingRotation                = VectorAngularVelocityInDegrees.GetSafeNormal();
 
-    FVector VectorToCage = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
-    Result.ShootingDirection = VectorToCage.GetSafeNormal() * ShootingStrench;
+    FVector CageLocation = OpponentGoalPost->GetActorLocation();
+    FString Message      = FString::Printf(TEXT("CAGE LOCATION -  %s"), *CageLocation.ToString());
+
+    GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, Message);
+
+    FVector VectorToCage          = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
+    FVector VectorToGoal          = VectorToCage;
+    FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
+    Result.ShootingDirection      = VectorToGoalNormalize * ShootingStrench;
 
     return Result;
 }
@@ -170,8 +177,6 @@ void ATBPlayer::CheckBallLocation()
         BallIsCloseLocation = false;
     }
 }
-
-
 
 void ATBPlayer::MoveToBall()
 {
