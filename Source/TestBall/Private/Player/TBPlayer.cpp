@@ -12,9 +12,11 @@
 #include "Ball\Ball1.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
+#include "Components\TBStaticMeshComponent.h"
+#include "Cage/Cage.h"
 
 class APlayerController;
-
+class UTBStaticMeshComponent;
 // Sets default values
 ATBPlayer::ATBPlayer()
 {
@@ -29,22 +31,21 @@ ATBPlayer::ATBPlayer()
     CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
-FVector ATBPlayer::GetClosebleBallLocation()
+FVector ATBPlayer::GetBallLocation()
 {
-    if (!ClosebleBall) return FVector::Zero();
+    if (!Ball) return FVector::Zero();
 
-    return ClosebleBall->GetActorLocation();
+    return Ball->GetActorLocation();
 }
 
-float ATBPlayer::GetDistanceToCloseballBall()
+float ATBPlayer::GetDistanceToBall()
 {
-    return (GetClosebleBallLocation() - GetActorLocation()).Length();
+    return (GetBallLocation() - GetActorLocation()).Length();
 }
-
 
 FVector ATBPlayer::FindVecMoveToShootBallPosition()
 {
-    FVector VecToBall = GetClosebleBallLocation() - GetActorLocation();
+    FVector VecToBall = GetBallLocation() - GetActorLocation();
 
     float VecToBallLenght = VecToBall.Length();
 
@@ -62,9 +63,7 @@ void ATBPlayer::BeginPlay()
 {
     Super::BeginPlay();
 
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABall1::StaticClass(), Balls);
     InitAnimationNotify();
-    SetClosebleBall();
 }
 
 // Called every frame
@@ -99,26 +98,42 @@ void ATBPlayer::MoveRight(float Amount)
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
+ShootingData ATBPlayer::GetShootingData()
+{
+    ShootingData Result;
+
+    FVector VectorAngularVelocityInDegrees = Ball->GetStaticMeshComponent()->GetPhysicsAngularVelocityInDegrees();
+    Result.ShootingRotation                = VectorAngularVelocityInDegrees.GetSafeNormal();
+
+    FVector VectorToCage = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
+    Result.ShootingDirection = VectorToCage.GetSafeNormal() * ShootingStrench;
+
+    return Result;
+}
+
 bool ATBPlayer::Shoot(float VecToBallLenght)
 {
     if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
     {
-        ClosebleBall->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
-        ReadyToShoot = true;
-        LockCamera();
-        PlayAnimMontage(ShotAnimMontage);
-        ShootAnimationExecuted = true;
-        return true;
+        if (Ball)
+        {
+            Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
+            ReadyToShoot = true;
+            LockCamera();
+            PlayAnimMontage(ShotAnimMontage);
+            ShootAnimationExecuted = true;
+            return true;
+        }
     }
     return false;
 }
 
-void ATBPlayer::CheckBallLocationandDirection(ABall1* Ball)
+void ATBPlayer::CheckBallLocationAndDirection()
 {
     if (Ball)
     {
-        CheckPlayerToBallDirection(Ball);
-        CheckBallLocation(Ball);
+        CheckPlayerToBallDirection();
+        CheckBallLocation();
     }
     else
     {
@@ -127,7 +142,7 @@ void ATBPlayer::CheckBallLocationandDirection(ABall1* Ball)
     }
 }
 
-void ATBPlayer::CheckPlayerToBallDirection(ABall1* Ball)
+void ATBPlayer::CheckPlayerToBallDirection()
 {
     VectorToBall                   = Ball->GetActorLocation() - this->GetActorLocation();
     float DotProductBallAndePlayer = FVector::DotProduct(VectorToBall, this->GetActorForwardVector());
@@ -141,7 +156,7 @@ void ATBPlayer::CheckPlayerToBallDirection(ABall1* Ball)
     }
 }
 
-void ATBPlayer::CheckBallLocation(ABall1* Ball)
+void ATBPlayer::CheckBallLocation()
 {
     VectorToBall    = Ball->GetActorLocation() - this->GetActorLocation();
     float VecLenght = VectorToBall.Length();
@@ -156,9 +171,11 @@ void ATBPlayer::CheckBallLocation(ABall1* Ball)
     }
 }
 
+
+
 void ATBPlayer::MoveToBall()
 {
-    VectorToBall = ClosebleBall->GetActorLocation() - this->GetActorLocation();
+    VectorToBall = Ball->GetActorLocation() - this->GetActorLocation();
     if (VectorToBall.Length() > ShootTheBallDistance)
     {
         AddMovementInput(VectorToBall.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
@@ -190,64 +207,30 @@ void ATBPlayer::InitAnimationNotify()
 void ATBPlayer::OnShootAnimationFinished()
 {
     GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString("Shooting AnimationEnd"));
-    ReadyToShoot = false;
+    ReadyToShoot           = false;
     ShootAnimationExecuted = false;
 }
 
 void ATBPlayer::CheckMoveToBall()
 {
-    SetClosebleBall();
-
-    VectorToBall    = ClosebleBall->GetActorLocation() - this->GetActorLocation();
-    float VecLenght = VectorToBall.Length();
-    if (VecLenght > ShootTheBallDistance)
+    if (Ball)
     {
-        IsMovingToBall = true;
+        VectorToBall    = Ball->GetActorLocation() - this->GetActorLocation();
+        float VecLenght = VectorToBall.Length();
+        if (VecLenght > ShootTheBallDistance)
+        {
+            IsMovingToBall = true;
+        }
     }
 }
 
 void ATBPlayer::MoveToBallAndShoot()
 {
     CheckMoveToBall();
-    Shoot(GetDistanceToCloseballBall());
+    Shoot(GetDistanceToBall());
 }
 
-void ATBPlayer::SetClosebleBall()
-{
-    for (auto& Actor : Balls)
-    {
-        auto Ball = Cast<ABall1>(Actor);
-
-        if (Ball)
-        {
-            CheckBallLocationandDirection(Ball);
-        }
-
-        if (BallIsCloseLocation && BallIsForward)
-        {
-            if (!ClosebleBall)
-            {
-                ClosebleBall = Ball;
-            }
-            else
-            {
-                float LenghtOfVectorToClosebleBall = (ClosebleBall->GetActorLocation() - this->GetActorLocation()).Length();
-                float LenghtOfVectorToNewBall      = (Ball->GetActorLocation() - this->GetActorLocation()).Length();
-
-                if (LenghtOfVectorToNewBall < LenghtOfVectorToClosebleBall)
-                {
-                    ClosebleBall = Ball;
-                }
-            }
-        }
-    }
-}
-
-
-void ATBPlayer::OnBallHit() 
-{
-
-}
+void ATBPlayer::OnBallHit() {}
 
 void ATBPlayer::LockCamera()
 {
@@ -258,7 +241,7 @@ void ATBPlayer::LockCamera()
 
         if (PlayerController)
         {
-            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), ClosebleBall->GetActorLocation());
+            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Ball->GetActorLocation());
 
             PlayerController->SetControlRotation(Rotation);
         }

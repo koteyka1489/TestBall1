@@ -12,7 +12,7 @@ EStateTreeRunStatus USTTaskShootBallToCage::EnterState(FStateTreeExecutionContex
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        if (ActorAI->Shoot(ActorAI->GetDistanceToCloseballBall()))
+        if (ActorAI->Shoot(ActorAI->GetDistanceToBall()))
         {
             FinishTask();
         }

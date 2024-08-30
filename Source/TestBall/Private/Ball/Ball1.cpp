@@ -8,6 +8,8 @@
 #include "Cage/Cage.h"
 #include "Kismet/GameplayStatics.h"
 
+struct ShootingData;
+
 // Sets default values
 ABall1::ABall1()
 {
@@ -40,30 +42,9 @@ void ABall1::HandleOnHit(
     {
         OnBallHit.Broadcast();
 
-        FVector VectorAngularVelocityInDegrees          = StaticMeshComponent->GetPhysicsAngularVelocityInDegrees();
-        FVector VectorAngularVelocityInDegreesNormalize = VectorAngularVelocityInDegrees.GetSafeNormal();
+        ShootingData ShootingData = Player->GetShootingData();
 
-        FVector VectorToCage = GetVectorCageLocation() - this->GetActorLocation();
-        float XVectorRand    = FMath::FRandRange(-500.0f, 500.0f);
-        float YVectorRand    = FMath::FRandRange(0.0f, 100.0f);
-        float ZVectorRand    = FMath::FRandRange(300.0f, 600.0f);
-        FVector VectorRandOfset(XVectorRand, YVectorRand, ZVectorRand);
-
-        FVector VectorToGoal          = VectorToCage + VectorOffset + VectorRandOfset;
-        FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
-
-        StaticMeshComponent->SetPhysicsLinearVelocity(VectorToGoalNormalize * VectorVelocity);
-        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(VectorAngularVelocityInDegreesNormalize * AngularVelocity);
+        StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }
-}
-
-FVector ABall1::GetVectorCageLocation()
-{
-    auto Cage = UGameplayStatics::GetActorOfClass(GetWorld(), ACage::StaticClass());
-    if (Cage)
-    {
-        return Cage->GetActorLocation();
-    }
-
-    return FVector::Zero();
 }

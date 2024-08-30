@@ -12,6 +12,17 @@ class USpringArmComponent;
 class USphereComponent;
 class ABall1;
 class UAnimmontage;
+class ACage;
+class ABall1;
+
+struct ShootingData
+{
+    FVector ShootingDirection;
+    FVector ShootingRotation;
+
+};
+
+
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -26,16 +37,18 @@ public:
     bool IsRedyToShoot() { return ReadyToShoot; }
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
-    FVector GetClosebleBallLocation();
+    FVector GetBallLocation();
 
      UFUNCTION(BlueprintCallable, Category = "Ball")
-    float GetDistanceToCloseballBall();
+    float GetDistanceToBall();
 
     FVector FindVecMoveToShootBallPosition();
 
     float GetShootTheBallDistance() { return ShootTheBallDistance; }
 
-    void SetClosebleBall();
+    
+    ShootingData GetShootingData();
+
     bool Shoot(float VecToBallLenght);
     void MoveToBall();
     bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
@@ -64,13 +77,19 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     int32 NTeam = 0;
 
-    UPROPERTY()
-    TArray<AActor*> Balls;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GoalPosts")
+    ACage* OwnGoalPost = nullptr;
 
-    UPROPERTY()
-    TObjectPtr<ABall1> ClosebleBall = nullptr;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GoalPosts")
+    ACage* OpponentGoalPost = nullptr;
 
-    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
+    ABall1* Ball = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float ShootingStrench = 1000;
+
+   
 
 public:
     virtual void Tick(float DeltaTime) override;
@@ -81,9 +100,9 @@ public:
 private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
-    void CheckBallLocationandDirection(ABall1* Ball);
-    void CheckPlayerToBallDirection(ABall1* Ball);
-    void CheckBallLocation(ABall1* Ball);
+    void CheckBallLocationAndDirection();
+    void CheckPlayerToBallDirection();
+    void CheckBallLocation();
     
     void InitAnimationNotify();
     void OnShootAnimationFinished();

@@ -20,9 +20,7 @@ EStateTreeRunStatus UTBFindBall::Tick(FStateTreeExecutionContext& Context, const
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        ActorAI->SetClosebleBall();
-        ClosestBallLocation = ActorAI->GetClosebleBallLocation();
-        //UE_LOG(LogTemp, Warning, TEXT("CloseBall %s"), *CloseBall.ToString());
+        ClosestBallLocation = ActorAI->GetBallLocation();
     }
 
     Super::Tick(Context, DeltaTime);
