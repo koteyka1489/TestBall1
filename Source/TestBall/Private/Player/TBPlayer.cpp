@@ -111,7 +111,7 @@ ShootingData ATBPlayer::GetShootingData()
     GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, Message);
 
     FVector VectorToCage          = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
-    FVector VectorToGoal          = VectorToCage;
+    FVector VectorToGoal          = VectorToCage + ShootOffset;
     FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
     Result.ShootingDirection      = VectorToGoalNormalize * ShootingStrench;
 
@@ -126,7 +126,6 @@ bool ATBPlayer::Shoot(float VecToBallLenght)
         {
             Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
             ReadyToShoot = true;
-            LockCamera();
             PlayAnimMontage(ShotAnimMontage);
             ShootAnimationExecuted = true;
             return true;
@@ -211,7 +210,7 @@ void ATBPlayer::InitAnimationNotify()
 
 void ATBPlayer::OnShootAnimationFinished()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString("Shooting AnimationEnd"));
+    GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Blue, FString("Shooting AnimationEnd"));
     ReadyToShoot           = false;
     ShootAnimationExecuted = false;
 }
@@ -237,18 +236,3 @@ void ATBPlayer::MoveToBallAndShoot()
 
 void ATBPlayer::OnBallHit() {}
 
-void ATBPlayer::LockCamera()
-{
-
-    if (LockCameraOnShoot)
-    {
-        APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-
-        if (PlayerController)
-        {
-            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Ball->GetActorLocation());
-
-            PlayerController->SetControlRotation(Rotation);
-        }
-    }
-}

@@ -2,6 +2,7 @@
 
 #include "AI/TBAIPlayer.h"
 #include "AI\TBAIController.h"
+#include "Ball\Ball1.h"
 
 ATBAIPlayer::ATBAIPlayer()
 {
@@ -9,12 +10,32 @@ ATBAIPlayer::ATBAIPlayer()
     AIControllerClass = ATBAIController::StaticClass();
 }
 
+void ATBAIPlayer::BeginPlay()
+{
+    AiController = Cast<ATBAIController>(GetController());
+}
+
 void ATBAIPlayer::MoveToTarget(FVector Location)
 {
-    AAIController* AiController = Cast<AAIController>(GetController());
+
     if (AiController)
     {
-       AiController->MoveToLocation(Location);
+        AiController->MoveToLocation(Location);
+        
     }
-    
 }
+
+//bool ATBAIPlayer::Shoot(float VecToBallLenght)
+//{
+//
+//    if (AiController && Ball)
+//    {
+//        FVector TargetVector    = Ball->GetActorLocation() - this->GetActorLocation();
+//        TargetVector.Z          = 0.0f;
+//        FRotator TargetRotation = TargetVector.Rotation();
+//
+//        AiController->SetControlRotation(TargetRotation);
+//    }
+//    Super::Shoot(VecToBallLenght);
+//    return true;
+//}

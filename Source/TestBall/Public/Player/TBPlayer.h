@@ -49,7 +49,7 @@ public:
     
     ShootingData GetShootingData();
 
-    bool Shoot(float VecToBallLenght);
+    virtual bool Shoot(float VecToBallLenght);
     void MoveToBall();
     bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
 
@@ -87,8 +87,10 @@ protected:
     ABall1* Ball = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float ShootingStrench = 5000;
+    float ShootingStrench = 3000;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    FVector ShootOffset = {0.0f, 0.0f, 1000.0f};
    
 
 public:
@@ -110,7 +112,7 @@ private:
     void MoveToBallAndShoot();
     
     void OnBallHit();
-    void LockCamera();
+
 
     bool IsMovingToBall      = false;
     bool BallIsForward       = false;
