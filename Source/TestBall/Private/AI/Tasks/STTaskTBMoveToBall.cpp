@@ -10,15 +10,12 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        
-        FVector Target = ActorAI->GetActorLocation() + ActorAI->FindVecMoveToShootBallPosition();
+        FVector Target = ActorAI->GetActorLocation() + ActorAI->GetBallLocation();
         ActorAI->MoveToTarget(Target);
-
     }
 
-    if (ActorAI->GetDistanceToBall() < ActorAI->GetShootTheBallDistance() + 50.0)
+    if (ActorAI->GetDistanceToBall() <  50.0)
     {
-        
         FinishTask();
     }
 

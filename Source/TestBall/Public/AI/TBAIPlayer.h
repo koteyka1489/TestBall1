@@ -7,6 +7,13 @@
 #include "TBAIPlayer.generated.h"
 
 class ATBAIController;
+
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+    MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
+    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting")
+};
 /**
  *
  */
@@ -20,6 +27,9 @@ public:
 
     void MoveToTarget(FVector Location);
     void RotateToTarget(FRotator Rotation, float DeltaTime);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
+    EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
