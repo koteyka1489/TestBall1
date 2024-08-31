@@ -19,9 +19,26 @@ struct ShootingData
 {
     FVector ShootingDirection;
     FVector ShootingRotation;
-
 };
 
+USTRUCT(BlueprintType)
+struct FShootingRandoms
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float x = 500.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float y = 100.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float zMin = 300.0f;
+
+     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float zMax = 1000.0f;
+};
 
 
 UCLASS()
@@ -89,6 +106,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     float ShootingStrench = 5000;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    FShootingRandoms ShootingRandoms;
    
 
 public:

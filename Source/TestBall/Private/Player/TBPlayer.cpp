@@ -49,7 +49,7 @@ FVector ATBPlayer::FindVecMoveToShootBallPosition()
 
     float VecToBallLenght = VecToBall.Length();
 
-    float GoalVecLenght = VecToBallLenght - ShootTheBallDistance;
+    float GoalVecLenght = VecToBallLenght - ShootTheBallDistance + (ShootTheBallDistance / 3);
 
     FVector VecToBallNormalize = VecToBall.GetSafeNormal();
 
@@ -108,8 +108,15 @@ ShootingData ATBPlayer::GetShootingData()
     FVector CageLocation = OpponentGoalPost->GetActorLocation();
     FString Message      = FString::Printf(TEXT("CAGE LOCATION -  %s"), *CageLocation.ToString());
 
-    FVector VectorToCage          = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
-    FVector VectorToGoal          = VectorToCage;
+    FVector VectorToCage = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
+
+    float XRand = FMath::FRandRange(-ShootingRandoms.x, ShootingRandoms.x);
+    float YRand = FMath::FRandRange(-ShootingRandoms.y, ShootingRandoms.y);
+    float ZRand = FMath::FRandRange(ShootingRandoms.zMin, ShootingRandoms.zMax);
+    FVector RandOffset(XRand, YRand, ZRand);
+
+    FVector VectorToGoal = VectorToCage + RandOffset;
+
     FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
     Result.ShootingDirection      = VectorToGoalNormalize * ShootingStrench;
 
