@@ -17,17 +17,10 @@ void ATBAIPlayer::MoveToTarget(FVector Location)
     {
         AiControllerComp->MoveToLocation(Location);
     }
-    
 }
 
-bool ATBAIPlayer::Shoot(float VecToBallLenght)
+void ATBAIPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
 {
-
-    return Super::Shoot(VecToBallLenght);
+    FRotator SmoothRotation = FMath::RInterpTo(this->GetActorRotation(), Rotation, DeltaTime, RotationSpeed);
+    SetActorRotation(SmoothRotation);
 }
-
-
-
-
-
-
