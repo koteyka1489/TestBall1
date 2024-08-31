@@ -108,8 +108,6 @@ ShootingData ATBPlayer::GetShootingData()
     FVector CageLocation = OpponentGoalPost->GetActorLocation();
     FString Message      = FString::Printf(TEXT("CAGE LOCATION -  %s"), *CageLocation.ToString());
 
-    GEngine->AddOnScreenDebugMessage(0, 5, FColor::Red, Message);
-
     FVector VectorToCage          = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
     FVector VectorToGoal          = VectorToCage;
     FVector VectorToGoalNormalize = VectorToGoal.GetSafeNormal();
@@ -211,7 +209,6 @@ void ATBPlayer::InitAnimationNotify()
 
 void ATBPlayer::OnShootAnimationFinished()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString("Shooting AnimationEnd"));
     ReadyToShoot           = false;
     ShootAnimationExecuted = false;
 }

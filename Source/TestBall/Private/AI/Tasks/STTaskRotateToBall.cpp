@@ -19,7 +19,7 @@ EStateTreeRunStatus USTTaskRotateToBall::Tick(FStateTreeExecutionContext& Contex
         ActorAI->RotateToTarget(TargetRotation, DeltaTime);
 
         double DeltaAngles = FMath::Abs(FMath::FindDeltaAngleDegrees<double, double>(TargetRotation.Yaw, ActorAI->GetActorRotation().Yaw));
-        UE_LOG(LogTemp, Display, TEXT("Delta %f"), DeltaAngles);
+ 
         if (DeltaAngles < 5.0f)
         {
             FinishTask();

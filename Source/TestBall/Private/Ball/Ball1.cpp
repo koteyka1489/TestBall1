@@ -38,7 +38,7 @@ void ABall1::HandleOnHit(
     UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 
-    FVector LinearVelCalc = StaticMeshComponent->GetPhysicsLinearVelocity();
+    FVector LinearVelCalc  = StaticMeshComponent->GetPhysicsLinearVelocity();
     FVector AngularVelCalc = StaticMeshComponent->GetPhysicsAngularVelocityInDegrees();
 
     auto Player = Cast<ATBPlayer>(OtherActor);
@@ -49,12 +49,6 @@ void ABall1::HandleOnHit(
 
         ShootingData ShootingData = Player->GetShootingData();
 
-        
-        FString Message  = FString::Printf(TEXT("ShootingDirection -  %s"), *ShootingData.ShootingDirection.ToString());
-        FString Message1 = FString::Printf(TEXT("ShootingRotation -  %s"), *ShootingData.ShootingRotation.ToString());
-        GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, Message);
-        GEngine->AddOnScreenDebugMessage(2, 5, FColor::Red, Message1);
-
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }
@@ -64,5 +58,4 @@ void ABall1::HandleOnHit(
         StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
     }
-
 }
