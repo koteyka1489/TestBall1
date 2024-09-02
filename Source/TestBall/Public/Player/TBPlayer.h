@@ -15,6 +15,7 @@ class UAnimmontage;
 class ACage;
 class ABall1;
 
+
 struct ShootingData
 {
     FVector ShootingDirection;
