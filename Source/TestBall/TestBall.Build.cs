@@ -16,8 +16,7 @@ public class TestBall : ModuleRules
             "AIModule",
              "GameplayTasks",
               "NavigationSystem",
-              "StateTreeModule",
-              "MotionWarping"
+              "StateTreeModule"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
