@@ -60,6 +60,12 @@ public:
      UFUNCTION(BlueprintCallable, Category = "Ball")
     float GetDistanceToBall();
 
+    UFUNCTION(BlueprintCallable, Category = "Ball")
+    bool IsStopingBall() { return StopingBall; }
+
+    UFUNCTION(BlueprintCallable, Category = "Ball")
+    void SetStoppingBall(bool inState) { StopingBall = inState; }
+
     FVector FindVecMoveToShootBallPosition();
 
     float GetShootTheBallDistance() { return ShootTheBallDistance; }
@@ -137,5 +143,6 @@ private:
     bool BallIsCloseLocation = false;
     bool ReadyToShoot        = false;
     bool ShootAnimationExecuted     = false;
+    bool StopingBall          = false;
     FVector VectorToBall     = FVector::ZeroVector;
 };

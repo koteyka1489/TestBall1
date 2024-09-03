@@ -25,7 +25,10 @@ class TESTBALL_API ATBAIPlayer : public ATBPlayer
 public:
     ATBAIPlayer();
 
+    UFUNCTION(BlueprintCallable)
     void MoveToTarget(FVector Location);
+
+
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")

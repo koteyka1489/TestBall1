@@ -21,6 +21,9 @@ public:
     ABall1();
     UTBStaticMeshComponent* GetStaticMeshComponent() { return StaticMeshComponent; }
 
+    UFUNCTION(BlueprintCallable, Category = "BallPhysic")
+    FVector GetBallPhysicVelocity();
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

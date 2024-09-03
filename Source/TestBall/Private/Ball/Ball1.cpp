@@ -22,6 +22,13 @@ ABall1::ABall1()
     StaticMeshComponent->OnComponentHit.AddDynamic(this, &ABall1::HandleOnHit);
 }
 
+FVector ABall1::GetBallPhysicVelocity()
+{
+    if (!StaticMeshComponent) return FVector::Zero();
+
+    return StaticMeshComponent->GetPhysicsLinearVelocity();
+}
+
 // Called when the game starts or when spawned
 void ABall1::BeginPlay()
 {
@@ -37,6 +44,7 @@ void ABall1::Tick(float DeltaTime)
 void ABall1::HandleOnHit(
     UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+    if (!StaticMeshComponent) return;
 
     FVector LinearVelCalc  = StaticMeshComponent->GetPhysicsLinearVelocity();
     FVector AngularVelCalc = StaticMeshComponent->GetPhysicsAngularVelocityInDegrees();
@@ -53,9 +61,15 @@ void ABall1::HandleOnHit(
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }
 
-    if (Player && !Player->IsRedyToShoot())
+    if (Player && !Player->IsRedyToShoot() && !Player->IsStopingBall())
     {
         StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
+    }
+
+    if (Player && Player->IsStopingBall())
+    {
+        StaticMeshComponent->SetPhysicsLinearVelocity(FVector::Zero());
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
     }
 }
