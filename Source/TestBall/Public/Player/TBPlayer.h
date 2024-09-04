@@ -72,8 +72,10 @@ public:
     void SetStoppingBall(bool inState) { StopingBall = inState; }
 
     FVector FindVecMoveToShootBallPosition();
+    FVector FindVecMoveToPassBallPosition();
 
     float GetShootTheBallDistance() { return ShootTheBallDistance; }
+    float GetPassBallDistance() { return PassBallDistance; }
 
     ShootingData GetShootingData();
     PassingData GetPassingData();
@@ -102,6 +104,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float ShootTheBallDistance = 135.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    float PassBallDistance = 80.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;

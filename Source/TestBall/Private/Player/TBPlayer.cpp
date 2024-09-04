@@ -61,6 +61,21 @@ FVector ATBPlayer::FindVecMoveToShootBallPosition()
     return Result;
 }
 
+FVector ATBPlayer::FindVecMoveToPassBallPosition()
+{
+    FVector VecToBall = GetBallLocation() - GetActorLocation();
+
+    float VecToBallLenght = VecToBall.Length();
+
+    float GoalVecLenght = VecToBallLenght - PassBallDistance + (PassBallDistance / 3);
+
+    FVector VecToBallNormalize = VecToBall.GetSafeNormal();
+
+    FVector Result = VecToBallNormalize * GoalVecLenght;
+
+    return Result;
+}
+
 // Called when the game starts or when spawned
 void ATBPlayer::BeginPlay()
 {
