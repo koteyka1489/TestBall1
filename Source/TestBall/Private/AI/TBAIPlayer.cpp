@@ -24,3 +24,8 @@ void ATBAIPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     FRotator SmoothRotation = FMath::RInterpTo(this->GetActorRotation(), Rotation, DeltaTime, RotationSpeed);
     SetActorRotation(SmoothRotation);
 }
+
+void ATBAIPlayer::SetStateTreeEnterCondition(EPlayerState State_in) 
+{
+    StateTreeEnterConditions = State_in;
+}

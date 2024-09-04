@@ -87,6 +87,9 @@ public:
     void PassBall(float VecToBallLenght);
     bool IsPassAnimationExecuted() { return PassAnimationExecuted; }
 
+    void TakeBall();
+    bool IsTakeBallAnimationExecuted() { return TakeBallAnimationExecuted; }
+
 protected:
     virtual void BeginPlay() override;
 
@@ -101,6 +104,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* PassAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* TakeBallAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float ShootTheBallDistance = 135.0f;
@@ -151,6 +157,7 @@ private:
     void InitAnimationNotify();
     void OnShootAnimationFinished();
     void OnPassAnimationFinished();
+    void OnTakeBallAnimationFinished();
 
     void CheckMoveToBall();
     void MoveToBallAndShoot();
@@ -165,5 +172,6 @@ private:
     bool ShootAnimationExecuted = false;
     bool StopingBall            = false;
     bool PassAnimationExecuted  = false;
+    bool TakeBallAnimationExecuted = false;
     FVector VectorToBall        = FVector::ZeroVector;
 };

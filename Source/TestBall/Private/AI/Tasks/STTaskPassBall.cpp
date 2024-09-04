@@ -19,12 +19,16 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
 
 EStateTreeRunStatus USTTaskPassBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (!ActorAI->IsPassAnimationExecuted())
     {
         FinishTask();
+
+        ActorAI->SetStateTreeEnterCondition(EPlayerState::TakePassingBall);
+
+        GEngine->AddOnScreenDebugMessage(3, 3, FColor::Red, TEXT("Task PAss Ball Finished"));
     }
+
     Super::Tick(Context, DeltaTime);
     return RunStatus;
 }

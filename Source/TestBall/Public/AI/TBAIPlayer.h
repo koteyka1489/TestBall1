@@ -13,7 +13,8 @@ enum class EPlayerState : uint8
 {
     MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
     MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting"),
-    PassBall UMETA(DisplayName = "PassBall")
+    PassBall UMETA(DisplayName = "PassBall"),
+    TakePassingBall UMETA(DisplayName = "TakePassingBall")
 };
 /**
  *
@@ -29,13 +30,14 @@ public:
     UFUNCTION(BlueprintCallable)
     void MoveToTarget(FVector Location);
 
-
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
-    EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
+    void SetStateTreeEnterCondition(EPlayerState State_in);
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float RotationSpeed = 5.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
+    EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
 };

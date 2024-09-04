@@ -51,6 +51,13 @@ void ABall1::HandleOnHit(
 
     auto Player = Cast<ATBPlayer>(OtherActor);
 
+    // Random Take Ball
+    if (Player && !Player->IsRedyToShoot() && !Player->IsStopingBall() && !Player->IsPassAnimationExecuted() &&
+        !Player->IsTakeBallAnimationExecuted())
+    {
+        StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
+    }
 
     // SHOOT
     if (Player && Player->IsRedyToShoot()) 
@@ -61,6 +68,7 @@ void ABall1::HandleOnHit(
 
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
+        return;
     }
 
     // PASS
@@ -68,23 +76,31 @@ void ABall1::HandleOnHit(
     {
         PassingData Passing = Player->GetPassingData();
 
+        FString Message = FString::Printf(TEXT("Passing Velocity - %s"), *Passing.PassDirection.ToString());
+        GEngine->AddOnScreenDebugMessage(1, 3, FColor::Red, Message );
+        
+
         StaticMeshComponent->SetPhysicsLinearVelocity(Passing.PassDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(Passing.PassRotation);
+        return;
     }
 
-    // Random Take Ball
-    if (Player && !Player->IsRedyToShoot() && !Player->IsStopingBall() && !Player->IsPassAnimationExecuted())
-    {
-        StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
-        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
-    }
+   
 
-    // Stop Ball
+    // Stop Ball 
     if (Player && Player->IsStopingBall())
     {
         StaticMeshComponent->SetPhysicsLinearVelocity(FVector::Zero());
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
+        return;
     }
 
-
+    //Take Ball
+    if (Player && Player->IsTakeBallAnimationExecuted())
+    {
+        FVector LinVel = Player->GetActorForwardVector() * 100;
+        StaticMeshComponent->SetPhysicsLinearVelocity(LinVel);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
+        return;
+    }
 }

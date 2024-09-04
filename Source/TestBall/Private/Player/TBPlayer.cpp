@@ -10,6 +10,7 @@
 #include "Animation/AnimMontage.h"
 #include "Animations\TBShootEndAnimNotify.h"
 #include "Animations\TBPassEndAnimNotify.h"
+#include "Animations\TBTakeBallEndAnimNotify.h"
 #include "Ball\Ball1.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
@@ -239,27 +240,56 @@ void ATBPlayer::PassBall(float VecToBallLenght)
     }
 }
 
+void ATBPlayer::TakeBall()
+{
+    if (Ball && TakeBallAnimMontage)
+    {
+        TakeBallAnimationExecuted = true;
+        PlayAnimMontage(TakeBallAnimMontage);
+    }
+}
+
 void ATBPlayer::InitAnimationNotify()
 {
 
-    if (!ShotAnimMontage) return;
+    if (!ShotAnimMontage || !PassAnimMontage || !TakeBallAnimMontage) return;
 
-    auto NotifyEvents = ShotAnimMontage->Notifies;
-
-    for (auto& NotifyEvent : NotifyEvents)
     {
-        auto ShootEndNotify = Cast<UTBShootEndAnimNotify>(NotifyEvent.Notify);
-        if (ShootEndNotify)
+        auto ShotNotifyEvents = ShotAnimMontage->Notifies;
+        for (auto& ShotNotifyEvent : ShotNotifyEvents)
         {
-            ShootEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnShootAnimationFinished);
-        }
-
-        auto PassEndNotify = Cast<UTBPassEndAnimNotify>(NotifyEvent.Notify);
-        if (PassEndNotify)
-        {
-            PassEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnPassAnimationFinished);
+            auto ShootEndNotify = Cast<UTBShootEndAnimNotify>(ShotNotifyEvent.Notify);
+            if (ShootEndNotify)
+            {
+                ShootEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnShootAnimationFinished);
+            }
         }
     }
+
+    {
+        auto PassNotifyEvents = PassAnimMontage->Notifies;
+        for (auto& PassNotifyEvent : PassNotifyEvents)
+        {
+            auto PassEndNotify = Cast<UTBPassEndAnimNotify>(PassNotifyEvent.Notify);
+            if (PassEndNotify)
+            {
+                PassEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnPassAnimationFinished);
+            }
+        }
+    }
+
+    {
+        auto TakeBallNotifyEvents = TakeBallAnimMontage->Notifies;
+        for (auto& TakeBallNotifyEvent : TakeBallNotifyEvents)
+        {
+            auto TakeBallEndNotify = Cast<UTBTakeBallEndAnimNotify>(TakeBallNotifyEvent.Notify);
+            if (TakeBallEndNotify)
+            {
+                TakeBallEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnTakeBallAnimationFinished);
+            }
+        }
+    }
+    
 }
 
 void ATBPlayer::OnShootAnimationFinished()
@@ -271,6 +301,13 @@ void ATBPlayer::OnShootAnimationFinished()
 void ATBPlayer::OnPassAnimationFinished()
 {
     PassAnimationExecuted = false;
+
+    GEngine->AddOnScreenDebugMessage(2, 3, FColor::Red, TEXT("Pass Animation Finished"));
+}
+
+void ATBPlayer::OnTakeBallAnimationFinished()
+{
+    TakeBallAnimationExecuted = false;
 }
 
 void ATBPlayer::CheckMoveToBall()
