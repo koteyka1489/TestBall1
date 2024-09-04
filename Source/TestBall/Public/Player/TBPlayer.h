@@ -14,6 +14,7 @@ class ABall1;
 class UAnimmontage;
 class ACage;
 class ABall1;
+class ATBAIPlayer;
 
 struct ShootingData
 {
@@ -125,6 +126,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     FShootingRandoms ShootingRandoms;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    TArray<ATBAIPlayer*> Team;
 
 public:
     virtual void Tick(float DeltaTime) override;

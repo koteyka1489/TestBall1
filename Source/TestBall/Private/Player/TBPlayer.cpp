@@ -15,9 +15,11 @@
 #include "GameFramework/PlayerController.h"
 #include "Components\TBStaticMeshComponent.h"
 #include "Cage/Cage.h"
+#include "AI\TBAIPlayer.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
+
 // Sets default values
 ATBPlayer::ATBPlayer()
 {
@@ -107,7 +109,6 @@ ShootingData ATBPlayer::GetShootingData()
     Result.ShootingRotation                = VectorAngularVelocityInDegrees.GetSafeNormal();
 
     FVector CageLocation = OpponentGoalPost->GetActorLocation();
-    FString Message      = FString::Printf(TEXT("CAGE LOCATION -  %s"), *CageLocation.ToString());
 
     FVector VectorToCage = OpponentGoalPost->GetActorLocation() - this->GetActorLocation();
 
@@ -126,9 +127,14 @@ ShootingData ATBPlayer::GetShootingData()
 
 PassingData ATBPlayer::GetPassingData()
 {
-    PassingData Result;
+    PassingData Result{};
 
-
+    if (Team.Num() > 0)
+    {
+        Result.PassDirection = Team[0]->GetActorLocation() - this->GetActorLocation();
+        Result.PassRotation  = FVector::Zero();
+        return Result;
+    }
 
     return Result;
 }
@@ -207,7 +213,7 @@ void ATBPlayer::MoveToBall()
     }
 }
 
-void ATBPlayer::PassBall(float VecToBallLenght) 
+void ATBPlayer::PassBall(float VecToBallLenght)
 {
     if (Ball && PassAnimMontage)
     {
@@ -216,7 +222,6 @@ void ATBPlayer::PassBall(float VecToBallLenght)
         LockCamera();
         PlayAnimMontage(PassAnimMontage);
     }
-
 }
 
 void ATBPlayer::InitAnimationNotify()
@@ -239,8 +244,6 @@ void ATBPlayer::InitAnimationNotify()
         {
             PassEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnPassAnimationFinished);
         }
-
-
     }
 }
 

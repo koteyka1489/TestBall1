@@ -66,10 +66,10 @@ void ABall1::HandleOnHit(
     // PASS
     if (Player && Player->IsPassAnimationExecuted()) 
     {
-        ShootingData PassingData = Player->GetShootingData();
+        PassingData Passing = Player->GetPassingData();
 
-        StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
-        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
+        StaticMeshComponent->SetPhysicsLinearVelocity(Passing.PassDirection);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(Passing.PassRotation);
     }
 
     // Random Take Ball

@@ -3,7 +3,8 @@
 #include "AI/Tasks/STTaskTBMoveToBall.h"
 #include "AI/TBAIPlayer.h"
 
-USTTaskTBMoveToBall::USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
+USTTaskTBMoveToBall::USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) 
+{}
 
 EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
@@ -13,7 +14,7 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
         ActorAI->MoveToTarget(ActorAI->GetBallLocation());
     }
 
-    if (ActorAI->GetDistanceToBall() <  50.0)
+    if (ActorAI->GetDistanceToBall() <  100.0)
     {
         FinishTask();
     }
