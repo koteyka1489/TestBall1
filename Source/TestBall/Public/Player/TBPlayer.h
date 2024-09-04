@@ -21,6 +21,12 @@ struct ShootingData
     FVector ShootingRotation;
 };
 
+struct PassingData
+{
+    FVector PassDirection;
+    FVector PassRotation;
+};
+
 USTRUCT(BlueprintType)
 struct FShootingRandoms
 {
@@ -69,6 +75,7 @@ public:
     float GetShootTheBallDistance() { return ShootTheBallDistance; }
 
     ShootingData GetShootingData();
+    PassingData GetPassingData();
 
     virtual bool Shoot(float VecToBallLenght);
     void MoveToBall();
@@ -134,6 +141,8 @@ private:
 
     void InitAnimationNotify();
     void OnShootAnimationFinished();
+    void OnPassAnimationFinished();
+
     void CheckMoveToBall();
     void MoveToBallAndShoot();
 

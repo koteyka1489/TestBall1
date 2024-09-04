@@ -51,7 +51,9 @@ void ABall1::HandleOnHit(
 
     auto Player = Cast<ATBPlayer>(OtherActor);
 
-    if (Player && Player->IsRedyToShoot())
+
+    // SHOOT
+    if (Player && Player->IsRedyToShoot()) 
     {
         OnBallHit.Broadcast();
 
@@ -61,15 +63,28 @@ void ABall1::HandleOnHit(
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
     }
 
-    if (Player && !Player->IsRedyToShoot() && !Player->IsStopingBall())
+    // PASS
+    if (Player && Player->IsPassAnimationExecuted()) 
+    {
+        ShootingData PassingData = Player->GetShootingData();
+
+        StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
+        StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
+    }
+
+    // Random Take Ball
+    if (Player && !Player->IsRedyToShoot() && !Player->IsStopingBall() && !Player->IsPassAnimationExecuted())
     {
         StaticMeshComponent->SetPhysicsLinearVelocity(LinearVelCalc);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(AngularVelCalc);
     }
 
+    // Stop Ball
     if (Player && Player->IsStopingBall())
     {
         StaticMeshComponent->SetPhysicsLinearVelocity(FVector::Zero());
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
     }
+
+
 }

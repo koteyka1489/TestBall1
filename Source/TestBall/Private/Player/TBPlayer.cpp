@@ -8,7 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Animation/AnimMontage.h"
-#include "Animations/TBAnimNotify.h"
+#include "Animations\TBShootEndAnimNotify.h"
+#include "Animations\TBPassEndAnimNotify.h"
 #include "Ball\Ball1.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
@@ -123,6 +124,15 @@ ShootingData ATBPlayer::GetShootingData()
     return Result;
 }
 
+PassingData ATBPlayer::GetPassingData()
+{
+    PassingData Result;
+
+
+
+    return Result;
+}
+
 bool ATBPlayer::Shoot(float VecToBallLenght)
 {
     if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
@@ -218,11 +228,19 @@ void ATBPlayer::InitAnimationNotify()
 
     for (auto& NotifyEvent : NotifyEvents)
     {
-        auto ShootEndNotify = Cast<UTBAnimNotify>(NotifyEvent.Notify);
+        auto ShootEndNotify = Cast<UTBShootEndAnimNotify>(NotifyEvent.Notify);
         if (ShootEndNotify)
         {
             ShootEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnShootAnimationFinished);
         }
+
+        auto PassEndNotify = Cast<UTBPassEndAnimNotify>(NotifyEvent.Notify);
+        if (PassEndNotify)
+        {
+            PassEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnPassAnimationFinished);
+        }
+
+
     }
 }
 
@@ -230,6 +248,11 @@ void ATBPlayer::OnShootAnimationFinished()
 {
     ReadyToShoot           = false;
     ShootAnimationExecuted = false;
+}
+
+void ATBPlayer::OnPassAnimationFinished()
+{
+    PassAnimationExecuted = false;
 }
 
 void ATBPlayer::CheckMoveToBall()
