@@ -15,7 +15,6 @@ class UAnimmontage;
 class ACage;
 class ABall1;
 
-
 struct ShootingData
 {
     FVector ShootingDirection;
@@ -37,10 +36,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     float zMin = 300.0f;
 
-     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     float zMax = 1000.0f;
 };
-
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -57,7 +55,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Ball")
     FVector GetBallLocation();
 
-     UFUNCTION(BlueprintCallable, Category = "Ball")
+    UFUNCTION(BlueprintCallable, Category = "Ball")
     float GetDistanceToBall();
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
@@ -70,12 +68,14 @@ public:
 
     float GetShootTheBallDistance() { return ShootTheBallDistance; }
 
-    
     ShootingData GetShootingData();
 
     virtual bool Shoot(float VecToBallLenght);
     void MoveToBall();
     bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
+
+    void PassBall(float VecToBallLenght);
+    bool IsPassAnimationExecuted() { return PassAnimationExecuted; }
 
 protected:
     virtual void BeginPlay() override;
@@ -88,6 +88,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* ShotAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* PassAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float ShootTheBallDistance = 135.0f;
@@ -115,7 +118,6 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     FShootingRandoms ShootingRandoms;
-   
 
 public:
     virtual void Tick(float DeltaTime) override;
@@ -129,20 +131,21 @@ private:
     void CheckBallLocationAndDirection();
     void CheckPlayerToBallDirection();
     void CheckBallLocation();
-    
+
     void InitAnimationNotify();
     void OnShootAnimationFinished();
     void CheckMoveToBall();
     void MoveToBallAndShoot();
-    
+
     void OnBallHit();
     void LockCamera();
 
-    bool IsMovingToBall      = false;
-    bool BallIsForward       = false;
-    bool BallIsCloseLocation = false;
-    bool ReadyToShoot        = false;
-    bool ShootAnimationExecuted     = false;
-    bool StopingBall          = false;
-    FVector VectorToBall     = FVector::ZeroVector;
+    bool IsMovingToBall         = false;
+    bool BallIsForward          = false;
+    bool BallIsCloseLocation    = false;
+    bool ReadyToShoot           = false;
+    bool ShootAnimationExecuted = false;
+    bool StopingBall            = false;
+    bool PassAnimationExecuted  = false;
+    FVector VectorToBall        = FVector::ZeroVector;
 };

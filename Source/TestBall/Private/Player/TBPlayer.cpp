@@ -127,7 +127,7 @@ bool ATBPlayer::Shoot(float VecToBallLenght)
 {
     if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
     {
-        if (Ball)
+        if (Ball && ShotAnimMontage)
         {
             Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
             ReadyToShoot = true;
@@ -195,6 +195,18 @@ void ATBPlayer::MoveToBall()
         IsMovingToBall = false;
         GetCharacterMovement()->StopMovementImmediately();
     }
+}
+
+void ATBPlayer::PassBall(float VecToBallLenght) 
+{
+    if (Ball && PassAnimMontage)
+    {
+        PassAnimationExecuted = true;
+        Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
+        LockCamera();
+        PlayAnimMontage(PassAnimMontage);
+    }
+
 }
 
 void ATBPlayer::InitAnimationNotify()

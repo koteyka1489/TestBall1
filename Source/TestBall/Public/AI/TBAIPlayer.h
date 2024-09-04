@@ -12,7 +12,8 @@ UENUM(BlueprintType)
 enum class EPlayerState : uint8
 {
     MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
-    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting")
+    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting"),
+    PassBall UMETA(DisplayName = "PassBall")
 };
 /**
  *
