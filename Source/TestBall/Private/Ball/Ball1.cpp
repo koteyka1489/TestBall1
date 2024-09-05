@@ -68,6 +68,7 @@ void ABall1::HandleOnHit(
 
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
+        Player->SetPlayerHaveBall(false);
         return;
     }
 
@@ -82,6 +83,7 @@ void ABall1::HandleOnHit(
 
         StaticMeshComponent->SetPhysicsLinearVelocity(Passing.PassDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(Passing.PassRotation);
+        Player->SetPlayerHaveBall(false);
         return;
     }
 
@@ -101,6 +103,7 @@ void ABall1::HandleOnHit(
         FVector LinVel = Player->GetActorForwardVector() * 100;
         StaticMeshComponent->SetPhysicsLinearVelocity(LinVel);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
+        Player->SetPlayerHaveBall(true);
         return;
     }
 }

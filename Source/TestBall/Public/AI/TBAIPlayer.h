@@ -35,9 +35,14 @@ public:
     void SetStateTreeEnterCondition(EPlayerState State_in);
 
 protected:
+    virtual void Tick(float DeltaTime) override;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float RotationSpeed = 5.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
     EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
+
+private:
+    void UpdatePlayerState();
 };

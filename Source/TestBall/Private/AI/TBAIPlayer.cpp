@@ -29,3 +29,22 @@ void ATBAIPlayer::SetStateTreeEnterCondition(EPlayerState State_in)
 {
     StateTreeEnterConditions = State_in;
 }
+
+void ATBAIPlayer::Tick(float DeltaTime) 
+{
+    Super::Tick(DeltaTime);
+
+    UpdatePlayerState();
+}
+
+void ATBAIPlayer::UpdatePlayerState() 
+{
+    if (IsPlayerHaveBall())
+    {
+        StateTreeEnterConditions = EPlayerState::PassBall;
+    }
+    if (!IsPlayerHaveBall())
+    {
+        StateTreeEnterConditions = EPlayerState::TakePassingBall;
+    }
+}

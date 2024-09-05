@@ -89,6 +89,8 @@ public:
 
     void TakeBall();
     bool IsTakeBallAnimationExecuted() { return TakeBallAnimationExecuted; }
+    bool IsPlayerHaveBall() { return PlayerHaveBall; }
+    void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
 
 protected:
     virtual void BeginPlay() override;
@@ -165,13 +167,15 @@ private:
     void OnBallHit();
     void LockCamera();
 
-    bool IsMovingToBall         = false;
-    bool BallIsForward          = false;
-    bool BallIsCloseLocation    = false;
-    bool ReadyToShoot           = false;
-    bool ShootAnimationExecuted = false;
-    bool StopingBall            = false;
-    bool PassAnimationExecuted  = false;
+    bool IsMovingToBall            = false;
+    bool BallIsForward             = false;
+    bool BallIsCloseLocation       = false;
+    bool ReadyToShoot              = false;
+    bool ShootAnimationExecuted    = false;
+    bool StopingBall               = false;
+    bool PassAnimationExecuted     = false;
     bool TakeBallAnimationExecuted = false;
-    FVector VectorToBall        = FVector::ZeroVector;
+    bool PlayerHaveBall            = false;
+    bool StartTakeBallTask         = false;
+    FVector VectorToBall           = FVector::ZeroVector;
 };

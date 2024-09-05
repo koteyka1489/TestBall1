@@ -5,6 +5,16 @@
 
 USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
+EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
+{
+
+    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
+
+
+    Super::EnterState(Context, Transition);
+    return RunStatus;
+}
+
 EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
 
@@ -13,12 +23,16 @@ EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, c
     {
         float DistanceToBall = ActorAI->GetDistanceToBall();
 
-        if (DistanceToBall < 800.0f && !ActorAI->IsTakeBallAnimationExecuted())
+        FString Message =
+            FString::Printf(TEXT("TakeBallAnimationExecuted - %s"), ActorAI->IsTakeBallAnimationExecuted() ? TEXT("True") : TEXT("False"));
+        GEngine->AddOnScreenDebugMessage(3, 3, FColor::Red, Message);
+
+        if (DistanceToBall < 800.0f && DistanceToBall > 400.0f && !ActorAI->IsTakeBallAnimationExecuted())
         {
             ActorAI->TakeBall();
         }
 
-        if (ActorAI->IsTakeBallAnimationExecuted())
+        if (ActorAI->IsTakeBallAnimationExecuted() && ActorAI->IsPlayerHaveBall())
         {
             FinishTask();
             ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);

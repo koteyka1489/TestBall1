@@ -23,10 +23,6 @@ EStateTreeRunStatus USTTaskPassBall::Tick(FStateTreeExecutionContext& Context, c
     if (!ActorAI->IsPassAnimationExecuted())
     {
         FinishTask();
-
-        ActorAI->SetStateTreeEnterCondition(EPlayerState::TakePassingBall);
-
-        GEngine->AddOnScreenDebugMessage(3, 3, FColor::Red, TEXT("Task PAss Ball Finished"));
     }
 
     Super::Tick(Context, DeltaTime);
