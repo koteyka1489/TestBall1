@@ -2,14 +2,12 @@
 
 #include "AI/Tasks/STTaskTakeBall.h"
 #include "AI/TBAIPlayer.h"
+#include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
 EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
-
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-
 
     Super::EnterState(Context, Transition);
     return RunStatus;
@@ -23,19 +21,19 @@ EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, c
     {
         float DistanceToBall = ActorAI->GetDistanceToBall();
 
-        FString Message =
-            FString::Printf(TEXT("TakeBallAnimationExecuted - %s"), ActorAI->IsTakeBallAnimationExecuted() ? TEXT("True") : TEXT("False"));
-        GEngine->AddOnScreenDebugMessage(3, 3, FColor::Red, Message);
-
-        if (DistanceToBall < 800.0f && DistanceToBall > 400.0f && !ActorAI->IsTakeBallAnimationExecuted())
+        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
+        if (PlayerAnimationComponent)
         {
-            ActorAI->TakeBall();
-        }
+            if (DistanceToBall < 800.0f && DistanceToBall > 400.0f && !PlayerAnimationComponent->IsTakeBallAnimationExecuted())
+            {
+                PlayerAnimationComponent->TakeBall();
+            }
 
-        if (ActorAI->IsTakeBallAnimationExecuted() && ActorAI->IsPlayerHaveBall())
-        {
-            FinishTask();
-            ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);
+            if (PlayerAnimationComponent->IsTakeBallAnimationExecuted() && ActorAI->IsPlayerHaveBall())
+            {
+                FinishTask();
+                ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);
+            }
         }
     }
 

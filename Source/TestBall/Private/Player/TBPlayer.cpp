@@ -7,16 +7,13 @@
 #include "Components\TBCharacterMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Animation/AnimMontage.h"
-#include "Animations\TBShootEndAnimNotify.h"
-#include "Animations\TBPassEndAnimNotify.h"
-#include "Animations\TBTakeBallEndAnimNotify.h"
 #include "Ball\Ball1.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
 #include "Components\TBStaticMeshComponent.h"
 #include "Cage/Cage.h"
 #include "AI\TBAIPlayer.h"
+#include "Components\TBPlayerAnimationComponent.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -33,6 +30,8 @@ ATBPlayer::ATBPlayer()
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    PlayerAnimationComponent = CreateDefaultSubobject<UTBPlayerAnimationComponent>("PLayerAnimationComponent");
 }
 
 FVector ATBPlayer::GetBallLocation()
@@ -53,7 +52,8 @@ FVector ATBPlayer::FindVecMoveToShootBallPosition()
 
     float VecToBallLenght = VecToBall.Length();
 
-    float GoalVecLenght = VecToBallLenght - ShootTheBallDistance + (ShootTheBallDistance / 3);
+    float GoalVecLenght =
+        VecToBallLenght - PlayerAnimationComponent->GetShootTheBallDistance() + (PlayerAnimationComponent->GetShootTheBallDistance() / 3);
 
     FVector VecToBallNormalize = VecToBall.GetSafeNormal();
 
@@ -68,7 +68,8 @@ FVector ATBPlayer::FindVecMoveToPassBallPosition()
 
     float VecToBallLenght = VecToBall.Length();
 
-    float GoalVecLenght = VecToBallLenght - PassBallDistance + (PassBallDistance / 3);
+    float GoalVecLenght =
+        VecToBallLenght - PlayerAnimationComponent->GetPassBallDistance() + (PlayerAnimationComponent->GetPassBallDistance() / 3);
 
     FVector VecToBallNormalize = VecToBall.GetSafeNormal();
 
@@ -81,8 +82,6 @@ FVector ATBPlayer::FindVecMoveToPassBallPosition()
 void ATBPlayer::BeginPlay()
 {
     Super::BeginPlay();
-
-    InitAnimationNotify();
 }
 
 // Called every frame
@@ -155,23 +154,6 @@ PassingData ATBPlayer::GetPassingData()
     return Result;
 }
 
-bool ATBPlayer::Shoot(float VecToBallLenght)
-{
-    if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
-    {
-        if (Ball && ShotAnimMontage)
-        {
-            Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
-            ReadyToShoot = true;
-            LockCamera();
-            PlayAnimMontage(ShotAnimMontage);
-            ShootAnimationExecuted = true;
-            return true;
-        }
-    }
-    return false;
-}
-
 void ATBPlayer::CheckBallLocationAndDirection()
 {
     if (Ball)
@@ -205,7 +187,7 @@ void ATBPlayer::CheckBallLocation()
     VectorToBall    = Ball->GetActorLocation() - this->GetActorLocation();
     float VecLenght = VectorToBall.Length();
 
-    if (VecLenght >= ShootTheBallDistance && VecLenght <= MaxDistanceToMoveTheBall)
+    if (VecLenght >= PlayerAnimationComponent->GetShootTheBallDistance() && VecLenght <= MaxDistanceToMoveTheBall)
     {
         BallIsCloseLocation = true;
     }
@@ -218,96 +200,16 @@ void ATBPlayer::CheckBallLocation()
 void ATBPlayer::MoveToBall()
 {
     VectorToBall = Ball->GetActorLocation() - this->GetActorLocation();
-    if (VectorToBall.Length() > ShootTheBallDistance)
+    if (VectorToBall.Length() > PlayerAnimationComponent->GetShootTheBallDistance())
     {
         AddMovementInput(VectorToBall.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
     }
     else
     {
         IsMovingToBall = false;
+        PlayerReadyToShoot = true;
         GetCharacterMovement()->StopMovementImmediately();
     }
-}
-
-void ATBPlayer::PassBall(float VecToBallLenght)
-{
-    if (Ball && PassAnimMontage)
-    {
-        PassAnimationExecuted = true;
-        Ball->OnBallHit.AddUObject(this, &ATBPlayer::OnBallHit);
-        LockCamera();
-        PlayAnimMontage(PassAnimMontage);
-    }
-}
-
-void ATBPlayer::TakeBall()
-{
-    if (Ball && TakeBallAnimMontage)
-    {
-        TakeBallAnimationExecuted = true;
-        PlayAnimMontage(TakeBallAnimMontage);
-    }
-}
-
-void ATBPlayer::InitAnimationNotify()
-{
-
-    if (!ShotAnimMontage || !PassAnimMontage || !TakeBallAnimMontage) return;
-
-    {
-        auto ShotNotifyEvents = ShotAnimMontage->Notifies;
-        for (auto& ShotNotifyEvent : ShotNotifyEvents)
-        {
-            auto ShootEndNotify = Cast<UTBShootEndAnimNotify>(ShotNotifyEvent.Notify);
-            if (ShootEndNotify)
-            {
-                ShootEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnShootAnimationFinished);
-            }
-        }
-    }
-
-    {
-        auto PassNotifyEvents = PassAnimMontage->Notifies;
-        for (auto& PassNotifyEvent : PassNotifyEvents)
-        {
-            auto PassEndNotify = Cast<UTBPassEndAnimNotify>(PassNotifyEvent.Notify);
-            if (PassEndNotify)
-            {
-                PassEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnPassAnimationFinished);
-            }
-        }
-    }
-
-    {
-        auto TakeBallNotifyEvents = TakeBallAnimMontage->Notifies;
-        for (auto& TakeBallNotifyEvent : TakeBallNotifyEvents)
-        {
-            auto TakeBallEndNotify = Cast<UTBTakeBallEndAnimNotify>(TakeBallNotifyEvent.Notify);
-            if (TakeBallEndNotify)
-            {
-                TakeBallEndNotify->OnNotified.AddUObject(this, &ATBPlayer::OnTakeBallAnimationFinished);
-            }
-        }
-    }
-    
-}
-
-void ATBPlayer::OnShootAnimationFinished()
-{
-    ReadyToShoot           = false;
-    ShootAnimationExecuted = false;
-}
-
-void ATBPlayer::OnPassAnimationFinished()
-{
-    PassAnimationExecuted = false;
-
-    GEngine->AddOnScreenDebugMessage(2, 3, FColor::Red, TEXT("Pass Animation Finished"));
-}
-
-void ATBPlayer::OnTakeBallAnimationFinished()
-{
-    TakeBallAnimationExecuted = false;
 }
 
 void ATBPlayer::CheckMoveToBall()
@@ -316,7 +218,7 @@ void ATBPlayer::CheckMoveToBall()
     {
         VectorToBall    = Ball->GetActorLocation() - this->GetActorLocation();
         float VecLenght = VectorToBall.Length();
-        if (VecLenght > ShootTheBallDistance)
+        if (VecLenght > PlayerAnimationComponent->GetShootTheBallDistance())
         {
             IsMovingToBall = true;
         }
@@ -326,15 +228,15 @@ void ATBPlayer::CheckMoveToBall()
 void ATBPlayer::MoveToBallAndShoot()
 {
     CheckMoveToBall();
-    Shoot(GetDistanceToBall());
+    PlayerAnimationComponent->Shoot(GetDistanceToBall());
 }
 
 void ATBPlayer::OnBallHit() {}
 
-void ATBPlayer::LockCamera()
+void ATBPlayer::SetRotationPlayerOnBall()
 {
 
-    if (LockCameraOnShoot)
+    if (bSetRotationPlayerOnBall)
     {
         APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 
@@ -346,5 +248,3 @@ void ATBPlayer::LockCamera()
         }
     }
 }
-
-

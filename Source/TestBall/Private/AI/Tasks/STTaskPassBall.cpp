@@ -2,6 +2,7 @@
 
 #include "AI/Tasks/STTaskPassBall.h"
 #include "AI\TBAIPlayer.h"
+#include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskPassBall::USTTaskPassBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
@@ -10,7 +11,11 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        ActorAI->PassBall(ActorAI->GetDistanceToBall());
+        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
+        if (PlayerAnimationComponent)
+        {
+            PlayerAnimationComponent->PassBall(ActorAI->GetDistanceToBall());
+        }
     }
 
     Super::EnterState(Context, Transition);
@@ -20,9 +25,16 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
 EStateTreeRunStatus USTTaskPassBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (!ActorAI->IsPassAnimationExecuted())
+    if (ActorAI)
     {
-        FinishTask();
+        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
+        if (PlayerAnimationComponent)
+        {
+            if (!PlayerAnimationComponent->IsPassAnimationExecuted())
+            {
+                FinishTask();
+            }
+        }
     }
 
     Super::Tick(Context, DeltaTime);

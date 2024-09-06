@@ -15,6 +15,7 @@ class UAnimmontage;
 class ACage;
 class ABall1;
 class ATBAIPlayer;
+class UTBPlayerAnimationComponent;
 
 struct ShootingData
 {
@@ -56,9 +57,6 @@ public:
     // Sets default values for this character's properties
     ATBPlayer();
 
-    UFUNCTION(BlueprintCallable)
-    bool IsRedyToShoot() { return ReadyToShoot; }
-
     UFUNCTION(BlueprintCallable, Category = "Ball")
     FVector GetBallLocation();
 
@@ -66,31 +64,22 @@ public:
     float GetDistanceToBall();
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
-    bool IsStopingBall() { return StopingBall; }
-
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    void SetStoppingBall(bool inState) { StopingBall = inState; }
+    ABall1* GetBallPtr() { return Ball; }
 
     FVector FindVecMoveToShootBallPosition();
     FVector FindVecMoveToPassBallPosition();
 
-    float GetShootTheBallDistance() { return ShootTheBallDistance; }
-    float GetPassBallDistance() { return PassBallDistance; }
-
     ShootingData GetShootingData();
     PassingData GetPassingData();
 
-    virtual bool Shoot(float VecToBallLenght);
     void MoveToBall();
-    bool IsShootAnimationExecuted() { return ShootAnimationExecuted; }
 
-    void PassBall(float VecToBallLenght);
-    bool IsPassAnimationExecuted() { return PassAnimationExecuted; }
-
-    void TakeBall();
-    bool IsTakeBallAnimationExecuted() { return TakeBallAnimationExecuted; }
     bool IsPlayerHaveBall() { return PlayerHaveBall; }
     void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
+    void SetRotationPlayerOnBall();
+    UTBPlayerAnimationComponent* GetPlayerAnimationComponent() { return PlayerAnimationComponent; }
+    bool IsReadyToShoot() { return PlayerReadyToShoot; }
+    void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
 
 protected:
     virtual void BeginPlay() override;
@@ -101,26 +90,8 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* ShotAnimMontage;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* PassAnimMontage;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* TakeBallAnimMontage;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    float ShootTheBallDistance = 135.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    float PassBallDistance = 80.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    float MaxDistanceToMoveTheBall = 3000.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    bool LockCameraOnShoot = false;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTBPlayerAnimationComponent* PlayerAnimationComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     int32 NTeam = 0;
@@ -143,10 +114,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     TArray<ATBAIPlayer*> Team;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    float MaxDistanceToMoveTheBall = 3000.0f;
+
 public:
     virtual void Tick(float DeltaTime) override;
-
-    // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
@@ -156,26 +128,18 @@ private:
     void CheckPlayerToBallDirection();
     void CheckBallLocation();
 
-    void InitAnimationNotify();
-    void OnShootAnimationFinished();
-    void OnPassAnimationFinished();
-    void OnTakeBallAnimationFinished();
-
     void CheckMoveToBall();
     void MoveToBallAndShoot();
 
     void OnBallHit();
-    void LockCamera();
+    
 
-    bool IsMovingToBall            = false;
-    bool BallIsForward             = false;
-    bool BallIsCloseLocation       = false;
-    bool ReadyToShoot              = false;
-    bool ShootAnimationExecuted    = false;
-    bool StopingBall               = false;
-    bool PassAnimationExecuted     = false;
-    bool TakeBallAnimationExecuted = false;
-    bool PlayerHaveBall            = false;
-    bool StartTakeBallTask         = false;
-    FVector VectorToBall           = FVector::ZeroVector;
+    bool IsMovingToBall           = false;
+    bool PlayerReadyToShoot       = false;
+    bool BallIsForward            = false;
+    bool BallIsCloseLocation      = false;
+    bool bSetRotationPlayerOnBall = false;
+    bool PlayerHaveBall           = false;
+
+    FVector VectorToBall = FVector::ZeroVector;
 };
