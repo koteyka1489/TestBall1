@@ -95,26 +95,6 @@ void ATBPlayer::Tick(float DeltaTime)
     }
 }
 
-// Called to bind functionality to input
-void ATBPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-    PlayerInputComponent->BindAxis("MoveForward", this, &ATBPlayer::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ATBPlayer::MoveRight);
-    PlayerInputComponent->BindAxis("LookUp", this, &ATBPlayer::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("LookRight", this, &ATBPlayer::AddControllerYawInput);
-    PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &ATBPlayer::MoveToBallAndShoot);
-}
-
-void ATBPlayer::MoveForward(float Amount)
-{
-    AddMovementInput(GetActorForwardVector(), Amount);
-}
-
-void ATBPlayer::MoveRight(float Amount)
-{
-    AddMovementInput(GetActorRightVector(), Amount);
-}
 
 ShootingData ATBPlayer::GetShootingData()
 {
