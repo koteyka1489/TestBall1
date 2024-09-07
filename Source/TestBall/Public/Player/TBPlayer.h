@@ -13,7 +13,6 @@ class USphereComponent;
 class ABall1;
 class UAnimmontage;
 class ACage;
-class ABall1;
 class ATBAIPlayer;
 class UTBPlayerAnimationComponent;
 class UTBBallComputeDataComponent;
@@ -54,7 +53,7 @@ public:
     bool IsPassAnimationExecuted();
 
     FVector GetVectorPlayerToBall();
- 
+
     void ShootBall();
     bool IsShootAnimationExecuted();
 
@@ -100,6 +99,12 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    float MaxDistanceToStartTakeBall = 800.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    float MinDistanceToStartTakeBall = 400.0f;
+
 public:
     virtual void Tick(float DeltaTime) override;
 
@@ -109,11 +114,9 @@ private:
 
     void OnBallHit();
 
-    bool IsMovingToBall           = false;
-    bool PlayerReadyToShoot       = false;
-    
+    bool IsMovingToBall     = false;
+    bool PlayerReadyToShoot = false;
+
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
-
-    
 };

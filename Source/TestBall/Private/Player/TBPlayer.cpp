@@ -41,7 +41,7 @@ bool ATBPlayer::IsCanMakePass()
 
 FVector ATBPlayer::FindVecMoveToPassBallPosition()
 {
-    return GetActorLocation() + BallComputeDataComponent->FindVecMoveToPassBallPosition();
+    return  BallComputeDataComponent->FindVecMoveToPassBallPosition();
 }
 
 bool ATBPlayer::IsCanMakeShoot()
@@ -87,7 +87,10 @@ void ATBPlayer::TakeBall()
 bool ATBPlayer::IsCanTakeBall()
 {
     float DistanceToBall = BallComputeDataComponent->GetDistanceToBall();
-    return DistanceToBall < 800.0f && DistanceToBall > 400.0f && !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
+    UE_LOG(LogTemp, Display, TEXT("DistanceToBall %f"), DistanceToBall);
+
+    return DistanceToBall < MaxDistanceToStartTakeBall && DistanceToBall > MinDistanceToStartTakeBall &&
+           !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
 }
 
 bool ATBPlayer::IsTakeBallComplete()

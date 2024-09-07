@@ -7,10 +7,12 @@
 #include "Components\TBStaticMeshComponent.h"
 #include "Cage/Cage.h"
 #include "AI\TBAIPlayer.h"
+#include "Kismet\GameplayStatics.h"
 
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
+
 }
 
 void UTBBallComputeDataComponent::BeginPlay()
@@ -18,6 +20,7 @@ void UTBBallComputeDataComponent::BeginPlay()
     Super::BeginPlay();
 
     Player = Cast<ATBPlayer>(GetOwner());
+    Ball   = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
 }
 
 FVector UTBBallComputeDataComponent::GetBallLocation()
@@ -65,7 +68,7 @@ FVector UTBBallComputeDataComponent::FindVecMoveToPassBallPosition()
 
         float GoalVecLenght = VecToBallLenght - PassBallDistance + (PassBallDistance / 3);
 
-        return VecToBall.GetSafeNormal() * GoalVecLenght;
+        return Player->GetActorLocation() + (VecToBall.GetSafeNormal() * GoalVecLenght);
     }
     return FVector::Zero();
 }

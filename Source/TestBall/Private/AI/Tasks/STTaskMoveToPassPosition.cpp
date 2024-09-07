@@ -15,6 +15,7 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& 
     if (ActorAI)
     {
         FVector Target = ActorAI->FindVecMoveToPassBallPosition();
+
         ActorAI->MoveToTarget(Target);
 
         if (ActorAI->IsCanMakePass())
