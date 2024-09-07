@@ -17,6 +17,8 @@ class ABall1;
 class ATBAIPlayer;
 class UTBPlayerAnimationComponent;
 class UTBBallComputeDataComponent;
+struct ShootingData;
+struct PassingData;
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -42,6 +44,31 @@ public:
 
     float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
 
+    bool IsCanMakePass();
+    FVector FindVecMoveToPassBallPosition();
+
+    bool IsCanMakeShoot();
+    FVector FindVecMoveToShootBallPosition();
+
+    void PassBall();
+    bool IsPassAnimationExecuted();
+
+    FVector GetVectorPlayerToBall();
+ 
+    void ShootBall();
+    bool IsShootAnimationExecuted();
+
+    void TakeBall();
+    bool IsCanTakeBall();
+    bool IsTakeBallComplete();
+
+    FVector GetBallLocation();
+    bool IsMoveToBallComplete();
+
+    ShootingData GetShootingData();
+    PassingData GetPassingData();
+
+    ABall1* GetBallPtr();
 
 protected:
     virtual void BeginPlay() override;

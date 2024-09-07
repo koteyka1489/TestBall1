@@ -13,11 +13,7 @@ EStateTreeRunStatus USTTaskShootBallToCage::EnterState(FStateTreeExecutionContex
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
-        {
-            PlayerAnimationComponent->Shoot(ActorAI->GetDistanceToBall());
-        }
+        ActorAI->ShootBall();
     }
     Super::EnterState(Context, Transition);
     return RunStatus;
@@ -28,13 +24,9 @@ EStateTreeRunStatus USTTaskShootBallToCage::Tick(FStateTreeExecutionContext& Con
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
+        if (!ActorAI->IsShootAnimationExecuted())
         {
-            if (!PlayerAnimationComponent->IsShootAnimationExecuted())
-            {
-                FinishTask();
-            }
+            FinishTask();
         }
     }
 

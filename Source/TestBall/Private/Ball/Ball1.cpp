@@ -8,6 +8,7 @@
 #include "Cage/Cage.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components\TBPlayerAnimationComponent.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 struct ShootingData;
 

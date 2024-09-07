@@ -14,16 +14,12 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
-        {
-            FVector Target = ActorAI->GetActorLocation() + ActorAI->FindVecMoveToShootBallPosition();
-            ActorAI->MoveToTarget(Target);
+        FVector Target = ActorAI->FindVecMoveToShootBallPosition();
+        ActorAI->MoveToTarget(Target);
 
-            if (ActorAI->GetDistanceToBall() < PlayerAnimationComponent->GetShootTheBallDistance() + 50.0)
-            {
-                FinishTask();
-            }
+        if (ActorAI->IsCanMakeShoot())
+        {
+            FinishTask();
         }
     }
 

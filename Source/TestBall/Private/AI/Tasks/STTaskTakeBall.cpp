@@ -8,7 +8,6 @@ USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : 
 
 EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
-
     Super::EnterState(Context, Transition);
     return RunStatus;
 }
@@ -19,21 +18,16 @@ EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, c
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        float DistanceToBall = ActorAI->GetDistanceToBall();
 
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
+        if (ActorAI->IsCanTakeBall())
         {
-            if (DistanceToBall < 800.0f && DistanceToBall > 400.0f && !PlayerAnimationComponent->IsTakeBallAnimationExecuted())
-            {
-                PlayerAnimationComponent->TakeBall();
-            }
+            ActorAI->TakeBall();
+        }
 
-            if (PlayerAnimationComponent->IsTakeBallAnimationExecuted() && ActorAI->IsPlayerHaveBall())
-            {
-                FinishTask();
-                ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);
-            }
+        if (ActorAI->IsTakeBallComplete())
+        {
+            ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);
+            FinishTask();
         }
     }
 

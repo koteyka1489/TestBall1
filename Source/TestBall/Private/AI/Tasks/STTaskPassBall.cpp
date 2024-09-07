@@ -11,11 +11,7 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
-        {
-            PlayerAnimationComponent->PassBall(ActorAI->GetDistanceToBall());
-        }
+        ActorAI->PassBall();
     }
 
     Super::EnterState(Context, Transition);
@@ -27,13 +23,9 @@ EStateTreeRunStatus USTTaskPassBall::Tick(FStateTreeExecutionContext& Context, c
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
+        if (!ActorAI->IsPassAnimationExecuted())
         {
-            if (!PlayerAnimationComponent->IsPassAnimationExecuted())
-            {
-                FinishTask();
-            }
+            FinishTask();
         }
     }
 

@@ -14,16 +14,12 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& 
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(ActorAI->GetPlayerAnimationComponent());
-        if (PlayerAnimationComponent)
-        {
-            FVector Target = ActorAI->GetActorLocation() + ActorAI->FindVecMoveToPassBallPosition();
-            ActorAI->MoveToTarget(Target);
+        FVector Target = ActorAI->FindVecMoveToPassBallPosition();
+        ActorAI->MoveToTarget(Target);
 
-            if (ActorAI->GetDistanceToBall() < PlayerAnimationComponent->GetPassBallDistance() + 50.0)
-            {
-                FinishTask();
-            }
+        if (ActorAI->IsCanMakePass())
+        {
+            FinishTask();
         }
     }
 

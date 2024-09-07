@@ -11,7 +11,7 @@ EStateTreeRunStatus USTTaskRotateToBall::Tick(FStateTreeExecutionContext& Contex
     const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
     if (ActorAI)
     {
-        FVector VecToBall = ActorAI->GetBallLocation() - ActorAI->GetActorLocation();
+        FVector VecToBall = ActorAI->GetVectorPlayerToBall();
         VecToBall.Z       = 0.0f;
 
         FRotator TargetRotation = VecToBall.Rotation();

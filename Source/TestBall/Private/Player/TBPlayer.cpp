@@ -34,6 +34,92 @@ ATBPlayer::ATBPlayer()
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
 }
 
+bool ATBPlayer::IsCanMakePass()
+{
+    return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetPassBallDistance() + 50.0);
+}
+
+FVector ATBPlayer::FindVecMoveToPassBallPosition()
+{
+    return GetActorLocation() + BallComputeDataComponent->FindVecMoveToPassBallPosition();
+}
+
+bool ATBPlayer::IsCanMakeShoot()
+{
+    return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetShootTheBallDistance() + 50.0f);
+}
+
+FVector ATBPlayer::FindVecMoveToShootBallPosition()
+{
+    return GetActorLocation() + BallComputeDataComponent->FindVecMoveToShootBallPosition();
+}
+
+void ATBPlayer::PassBall() 
+{
+    PlayerAnimationComponent->PassBall(BallComputeDataComponent->GetDistanceToBall());
+}
+
+bool ATBPlayer::IsPassAnimationExecuted()
+{
+    return PlayerAnimationComponent->IsPassAnimationExecuted();
+}
+
+FVector ATBPlayer::GetVectorPlayerToBall()
+{
+    return BallComputeDataComponent->GetVecPlayerToBall();
+}
+
+void ATBPlayer::ShootBall()
+{
+    PlayerAnimationComponent->Shoot(BallComputeDataComponent->GetDistanceToBall());
+}
+
+bool ATBPlayer::IsShootAnimationExecuted()
+{
+    return PlayerAnimationComponent->IsShootAnimationExecuted();
+}
+
+void ATBPlayer::TakeBall()
+{
+    PlayerAnimationComponent->TakeBall();
+}
+
+bool ATBPlayer::IsCanTakeBall()
+{
+    float DistanceToBall = BallComputeDataComponent->GetDistanceToBall();
+    return DistanceToBall < 800.0f && DistanceToBall > 400.0f && !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
+}
+
+bool ATBPlayer::IsTakeBallComplete()
+{
+    return PlayerAnimationComponent->IsTakeBallAnimationExecuted() && IsPlayerHaveBall();
+}
+
+FVector ATBPlayer::GetBallLocation()
+{
+    return BallComputeDataComponent->GetBallLocation();
+}
+
+bool ATBPlayer::IsMoveToBallComplete()
+{
+    return BallComputeDataComponent->GetDistanceToBall() < 100.0;
+}
+
+ShootingData ATBPlayer::GetShootingData()
+{
+    return BallComputeDataComponent->GetShootingData();
+}
+
+PassingData ATBPlayer::GetPassingData()
+{
+    return BallComputeDataComponent->GetPassingData();
+}
+
+ABall1* ATBPlayer::GetBallPtr()
+{
+    return BallComputeDataComponent->GetBallPtr();
+}
+
 // Called when the game starts or when spawned
 void ATBPlayer::BeginPlay()
 {
@@ -93,7 +179,7 @@ void ATBPlayer::SetRotationPlayerOnBall()
 
         if (PlayerController)
         {
-            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Ball->GetActorLocation());
+            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), BallComputeDataComponent->GetBallLocation());
 
             PlayerController->SetControlRotation(Rotation);
         }
