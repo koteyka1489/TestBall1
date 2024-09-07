@@ -16,37 +16,7 @@ class ACage;
 class ABall1;
 class ATBAIPlayer;
 class UTBPlayerAnimationComponent;
-
-struct ShootingData
-{
-    FVector ShootingDirection;
-    FVector ShootingRotation;
-};
-
-struct PassingData
-{
-    FVector PassDirection;
-    FVector PassRotation;
-};
-
-USTRUCT(BlueprintType)
-struct FShootingRandoms
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float x = 500.0f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float y = 100.f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float zMin = 300.0f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float zMax = 1000.0f;
-};
+class UTBBallComputeDataComponent;
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -57,29 +27,21 @@ public:
     // Sets default values for this character's properties
     ATBPlayer();
 
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    FVector GetBallLocation();
-
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    float GetDistanceToBall();
-
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    ABall1* GetBallPtr() { return Ball; }
-
-    FVector FindVecMoveToShootBallPosition();
-    FVector FindVecMoveToPassBallPosition();
-
-    ShootingData GetShootingData();
-    PassingData GetPassingData();
-
     void MoveToBall();
 
     bool IsPlayerHaveBall() { return PlayerHaveBall; }
     void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
+
     void SetRotationPlayerOnBall();
     UTBPlayerAnimationComponent* GetPlayerAnimationComponent() { return PlayerAnimationComponent; }
     bool IsReadyToShoot() { return PlayerReadyToShoot; }
     void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
+
+    ACage* GetOpponentGoalPost() { return OpponentGoalPost; }
+    TArray<ATBAIPlayer*> GetTeam() { return Team; }
+
+    float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
+
 
 protected:
     virtual void BeginPlay() override;
@@ -93,6 +55,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTBPlayerAnimationComponent* PlayerAnimationComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTBBallComputeDataComponent* BallComputeDataComponent;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     int32 NTeam = 0;
 
@@ -101,15 +66,6 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GoalPosts")
     ACage* OpponentGoalPost = nullptr;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
-    ABall1* Ball = nullptr;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    float ShootingStrench = 5000;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
-    FShootingRandoms ShootingRandoms;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     TArray<ATBAIPlayer*> Team;
@@ -121,23 +77,16 @@ public:
     virtual void Tick(float DeltaTime) override;
 
 private:
-
-    void CheckBallLocationAndDirection();
-    void CheckPlayerToBallDirection();
-    void CheckBallLocation();
-
     void CheckMoveToBall();
     void MoveToBallAndShoot();
 
     void OnBallHit();
-    
 
     bool IsMovingToBall           = false;
     bool PlayerReadyToShoot       = false;
-    bool BallIsForward            = false;
-    bool BallIsCloseLocation      = false;
+    
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
 
-    FVector VectorToBall = FVector::ZeroVector;
+    
 };
