@@ -90,12 +90,6 @@ protected:
     virtual void BeginPlay() override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent* SpringArmComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent* CameraComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTBPlayerAnimationComponent* PlayerAnimationComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")

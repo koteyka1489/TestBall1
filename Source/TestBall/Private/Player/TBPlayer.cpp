@@ -23,13 +23,6 @@ ATBPlayer::ATBPlayer()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
-    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
-    SpringArmComponent->SetupAttachment(GetRootComponent());
-    SpringArmComponent->bUsePawnControlRotation = true;
-
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(SpringArmComponent);
-
     PlayerAnimationComponent = CreateDefaultSubobject<UTBPlayerAnimationComponent>("PLayerAnimationComponent");
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
 
