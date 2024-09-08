@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
 #include "TBPlayer.generated.h"
 
 class UCameraComponent;
@@ -13,11 +12,21 @@ class USphereComponent;
 class ABall1;
 class UAnimmontage;
 class ACage;
-class ATBAIPlayer;
 class UTBPlayerAnimationComponent;
 class UTBBallComputeDataComponent;
 struct ShootingData;
 struct PassingData;
+
+class ATBAIController;
+
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+    MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
+    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting"),
+    PassBall UMETA(DisplayName = "PassBall"),
+    TakePassingBall UMETA(DisplayName = "TakePassingBall")
+};
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -27,6 +36,7 @@ class TESTBALL_API ATBPlayer : public ACharacter
 public:
     // Sets default values for this character's properties
     ATBPlayer();
+    virtual void Tick(float DeltaTime) override;
 
     void MoveToBall();
 
@@ -39,7 +49,7 @@ public:
     void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
 
     ACage* GetOpponentGoalPost() { return OpponentGoalPost; }
-    TArray<ATBAIPlayer*> GetTeam() { return Team; }
+    TArray<ATBPlayer*> GetTeam() { return Team; }
 
     float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
 
@@ -69,6 +79,13 @@ public:
 
     ABall1* GetBallPtr();
 
+    UFUNCTION(BlueprintCallable)
+    void MoveToTarget(FVector Location);
+
+    void RotateToTarget(FRotator Rotation, float DeltaTime);
+
+    void SetStateTreeEnterCondition(EPlayerState State_in);
+
 protected:
     virtual void BeginPlay() override;
 
@@ -94,7 +111,7 @@ protected:
     ACage* OpponentGoalPost = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
-    TArray<ATBAIPlayer*> Team;
+    TArray<ATBPlayer*> Team;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
@@ -105,14 +122,19 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MinDistanceToStartTakeBall = 400.0f;
 
-public:
-    virtual void Tick(float DeltaTime) override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float RotationSpeed = 5.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
+    EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
 
 private:
     void CheckMoveToBall();
     void MoveToBallAndShoot();
 
     void OnBallHit();
+
+    void UpdatePlayerState();
 
     bool IsMovingToBall     = false;
     bool PlayerReadyToShoot = false;

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/Tasks/STTaskMoveToShootingPosition.h"
-#include "AI/TBAIPlayer.h"
+#include "Player\TBPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskMoveToShootingPosition::USTTaskMoveToShootingPosition(const FObjectInitializer& ObjectInitializer)
@@ -11,13 +11,13 @@ USTTaskMoveToShootingPosition::USTTaskMoveToShootingPosition(const FObjectInitia
 
 EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
-        FVector Target = ActorAI->FindVecMoveToShootBallPosition();
-        ActorAI->MoveToTarget(Target);
+        FVector Target = Player->FindVecMoveToShootBallPosition();
+        Player->MoveToTarget(Target);
 
-        if (ActorAI->IsCanMakeShoot())
+        if (Player->IsCanMakeShoot())
         {
             FinishTask();
         }

@@ -6,7 +6,6 @@
 #include "Components\TBPlayerAnimationComponent.h"
 #include "Components\TBStaticMeshComponent.h"
 #include "Cage/Cage.h"
-#include "AI\TBAIPlayer.h"
 #include "Kismet\GameplayStatics.h"
 
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()

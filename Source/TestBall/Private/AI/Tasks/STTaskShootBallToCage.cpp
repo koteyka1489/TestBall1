@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/Tasks/STTaskShootBallToCage.h"
-#include "AI\TBAIPlayer.h"
+#include "Player\TBPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskShootBallToCage::USTTaskShootBallToCage(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer)
@@ -10,10 +10,10 @@ USTTaskShootBallToCage::USTTaskShootBallToCage(const FObjectInitializer& ObjectI
 
 EStateTreeRunStatus USTTaskShootBallToCage::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
-        ActorAI->ShootBall();
+        Player->ShootBall();
     }
     Super::EnterState(Context, Transition);
     return RunStatus;
@@ -21,10 +21,10 @@ EStateTreeRunStatus USTTaskShootBallToCage::EnterState(FStateTreeExecutionContex
 
 EStateTreeRunStatus USTTaskShootBallToCage::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
-        if (!ActorAI->IsShootAnimationExecuted())
+        if (!Player->IsShootAnimationExecuted())
         {
             FinishTask();
         }

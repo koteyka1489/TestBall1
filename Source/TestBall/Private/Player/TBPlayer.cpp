@@ -10,9 +10,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
 #include "Cage/Cage.h"
-#include "AI\TBAIPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
 #include "Components\TBBallComputeDataComponent.h"
+#include "AI\TBAIController.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -32,6 +32,24 @@ ATBPlayer::ATBPlayer()
 
     PlayerAnimationComponent = CreateDefaultSubobject<UTBPlayerAnimationComponent>("PLayerAnimationComponent");
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
+
+    AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
+    AIControllerClass = ATBAIController::StaticClass();
+}
+
+void ATBPlayer::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
+void ATBPlayer::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    UpdatePlayerState();
+    if (IsMovingToBall)
+    {
+        MoveToBall();
+    }
 }
 
 bool ATBPlayer::IsCanMakePass()
@@ -41,7 +59,7 @@ bool ATBPlayer::IsCanMakePass()
 
 FVector ATBPlayer::FindVecMoveToPassBallPosition()
 {
-    return  BallComputeDataComponent->FindVecMoveToPassBallPosition();
+    return BallComputeDataComponent->FindVecMoveToPassBallPosition();
 }
 
 bool ATBPlayer::IsCanMakeShoot()
@@ -54,7 +72,7 @@ FVector ATBPlayer::FindVecMoveToShootBallPosition()
     return GetActorLocation() + BallComputeDataComponent->FindVecMoveToShootBallPosition();
 }
 
-void ATBPlayer::PassBall() 
+void ATBPlayer::PassBall()
 {
     PlayerAnimationComponent->PassBall(BallComputeDataComponent->GetDistanceToBall());
 }
@@ -123,23 +141,6 @@ ABall1* ATBPlayer::GetBallPtr()
     return BallComputeDataComponent->GetBallPtr();
 }
 
-// Called when the game starts or when spawned
-void ATBPlayer::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
-// Called every frame
-void ATBPlayer::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-
-    if (IsMovingToBall)
-    {
-        MoveToBall();
-    }
-}
-
 void ATBPlayer::MoveToBall()
 {
     FVector VectorToBall = BallComputeDataComponent->GetVecPlayerToBall();
@@ -158,7 +159,7 @@ void ATBPlayer::MoveToBall()
 void ATBPlayer::CheckMoveToBall()
 {
 
-    float VecLenght      = BallComputeDataComponent->GetVecPlayerToBall().Length();
+    float VecLenght = BallComputeDataComponent->GetVecPlayerToBall().Length();
     if (VecLenght > PlayerAnimationComponent->GetShootTheBallDistance())
     {
         IsMovingToBall = true;
@@ -182,9 +183,42 @@ void ATBPlayer::SetRotationPlayerOnBall()
 
         if (PlayerController)
         {
-            const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), BallComputeDataComponent->GetBallLocation());
+            const FRotator Rotation =
+                UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), BallComputeDataComponent->GetBallLocation());
 
             PlayerController->SetControlRotation(Rotation);
         }
+    }
+}
+
+void ATBPlayer::MoveToTarget(FVector Location)
+{
+    ATBAIController* AiControllerComp = Cast<ATBAIController>(GetController());
+    if (AiControllerComp)
+    {
+        AiControllerComp->MoveToLocation(Location);
+    }
+}
+
+void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
+{
+    FRotator SmoothRotation = FMath::RInterpTo(this->GetActorRotation(), Rotation, DeltaTime, RotationSpeed);
+    SetActorRotation(SmoothRotation);
+}
+
+void ATBPlayer::SetStateTreeEnterCondition(EPlayerState State_in)
+{
+    StateTreeEnterConditions = State_in;
+}
+
+void ATBPlayer::UpdatePlayerState()
+{
+    if (IsPlayerHaveBall())
+    {
+        StateTreeEnterConditions = EPlayerState::PassBall;
+    }
+    if (!IsPlayerHaveBall())
+    {
+        StateTreeEnterConditions = EPlayerState::TakePassingBall;
     }
 }

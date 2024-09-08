@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/Tasks/STTaskTBMoveToBall.h"
-#include "AI/TBAIPlayer.h"
+#include "Player\TBPlayer.h"
 
 USTTaskTBMoveToBall::USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
 EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
-        ActorAI->MoveToTarget(ActorAI->GetBallLocation());
+        Player->MoveToTarget(Player->GetBallLocation());
     }
 
-    if (ActorAI->IsMoveToBallComplete())
+    if (Player->IsMoveToBallComplete())
     {
         FinishTask();
     }

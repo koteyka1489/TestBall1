@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/Tasks/STTaskMoveToPassPosition.h"
-#include "AI/TBAIPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
+#include "Player\TBPlayer.h"
 
 USTTaskMoveToPassPosition::USTTaskMoveToPassPosition(const FObjectInitializer& ObjectInitializer)
     : UStateTreeTaskBlueprintBase(ObjectInitializer)
@@ -11,14 +11,14 @@ USTTaskMoveToPassPosition::USTTaskMoveToPassPosition(const FObjectInitializer& O
 
 EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
-        FVector Target = ActorAI->FindVecMoveToPassBallPosition();
+        FVector Target = Player->FindVecMoveToPassBallPosition();
 
-        ActorAI->MoveToTarget(Target);
+        Player->MoveToTarget(Target);
 
-        if (ActorAI->IsCanMakePass())
+        if (Player->IsCanMakePass())
         {
             FinishTask();
         }

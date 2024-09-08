@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/Tasks/STTaskTakeBall.h"
-#include "AI/TBAIPlayer.h"
+#include "Player\TBPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
@@ -15,18 +15,18 @@ EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Cont
 EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
 
-    const auto ActorAI = Cast<ATBAIPlayer>(GetOwnerActor(Context));
-    if (ActorAI)
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
     {
 
-        if (ActorAI->IsCanTakeBall())
+        if (Player->IsCanTakeBall())
         {
-            ActorAI->TakeBall();
+            Player->TakeBall();
         }
 
-        if (ActorAI->IsTakeBallComplete())
+        if (Player->IsTakeBallComplete())
         {
-            ActorAI->SetStateTreeEnterCondition(EPlayerState::PassBall);
+            Player->SetStateTreeEnterCondition(EPlayerState::PassBall);
             FinishTask();
         }
     }
