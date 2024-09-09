@@ -19,6 +19,7 @@ struct PassingData;
 class ATBAIController;
 class UTBPlayerStateComponent;
 enum class EPlayerState : uint8;
+class UTBBrainComponent;
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -39,9 +40,6 @@ public:
     UTBPlayerAnimationComponent* GetPlayerAnimationComponent() { return PlayerAnimationComponent; }
     bool IsReadyToShoot() { return PlayerReadyToShoot; }
     void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
-
-    ACage* GetOpponentGoalPost() { return OpponentGoalPost; }
-    TArray<ATBPlayer*> GetTeam() { return Team; }
 
     float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
 
@@ -79,6 +77,9 @@ public:
     void SetPlayerState(EPlayerState State);
     EPlayerState GetPlayerState();
 
+    UTBBrainComponent* GetBrainComponent() { return BrainComponent; }
+
+
 protected:
     virtual void BeginPlay() override;
 
@@ -91,17 +92,8 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTBPlayerStateComponent* PlayerStateComponent;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
-    int32 NTeam = 0;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GoalPosts")
-    ACage* OwnGoalPost = nullptr;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GoalPosts")
-    ACage* OpponentGoalPost = nullptr;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
-    TArray<ATBPlayer*> Team;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTBBrainComponent* BrainComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;

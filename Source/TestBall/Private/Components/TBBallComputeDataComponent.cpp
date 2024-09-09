@@ -7,6 +7,7 @@
 #include "Components\TBStaticMeshComponent.h"
 #include "Cage/Cage.h"
 #include "Kismet\GameplayStatics.h"
+#include "Components\TBBrainComponent.h"
 
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
@@ -79,7 +80,7 @@ ShootingData UTBBallComputeDataComponent::GetShootingData()
     FVector VectorAngularVelocityInDegrees = Ball->GetStaticMeshComponent()->GetPhysicsAngularVelocityInDegrees();
     Result.ShootingRotation                = VectorAngularVelocityInDegrees.GetSafeNormal();
 
-    FVector CageLocation = Player->GetOpponentGoalPost()->GetActorLocation();
+    FVector CageLocation = Player->GetBrainComponent()->GetOpponentGoalPost()->GetActorLocation();
 
     FVector VectorToCage = CageLocation - Player->GetActorLocation();
 
@@ -101,7 +102,7 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
     PassingData Result{};
     if (Player)
     {
-        auto Team = Player->GetTeam();
+        auto Team = Player->GetBrainComponent()->GetTeam();
         if (Team.Num() > 0)
         {
             Result.PassDirection = Team[0]->GetActorLocation() - Player->GetActorLocation();

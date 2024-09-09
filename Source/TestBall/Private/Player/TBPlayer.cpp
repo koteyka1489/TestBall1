@@ -14,6 +14,7 @@
 #include "Components\TBBallComputeDataComponent.h"
 #include "AI\TBAIController.h"
 #include "Components\TBPlayerStateComponent.h"
+#include "Components\TBBrainComponent.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -27,6 +28,7 @@ ATBPlayer::ATBPlayer()
     PlayerAnimationComponent = CreateDefaultSubobject<UTBPlayerAnimationComponent>("PLayerAnimationComponent");
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
     PlayerStateComponent     = CreateDefaultSubobject<UTBPlayerStateComponent>("PlayerStateComponent");
+    BrainComponent           = CreateDefaultSubobject<UTBBrainComponent>("BrainComponent");
 
     AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ATBAIController::StaticClass();
