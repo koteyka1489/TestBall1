@@ -13,6 +13,7 @@
 #include "Components\TBPlayerAnimationComponent.h"
 #include "Components\TBBallComputeDataComponent.h"
 #include "AI\TBAIController.h"
+#include "Components\TBPlayerStateComponent.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -25,6 +26,7 @@ ATBPlayer::ATBPlayer()
 
     PlayerAnimationComponent = CreateDefaultSubobject<UTBPlayerAnimationComponent>("PLayerAnimationComponent");
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
+    PlayerStateComponent     = CreateDefaultSubobject<UTBPlayerStateComponent>("PlayerStateComponent");
 
     AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ATBAIController::StaticClass();
@@ -199,19 +201,24 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
-void ATBPlayer::SetStateTreeEnterCondition(EPlayerState State_in)
+void ATBPlayer::SetPlayerState(EPlayerState State)
 {
-    StateTreeEnterConditions = State_in;
+    PlayerStateComponent->SetPlayerState(State);
+}
+
+EPlayerState ATBPlayer::GetPlayerState()
+{
+    return PlayerStateComponent->GetPlayerState();
 }
 
 void ATBPlayer::UpdatePlayerState()
 {
     if (IsPlayerHaveBall())
     {
-        StateTreeEnterConditions = EPlayerState::PassBall;
+        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
     }
     if (!IsPlayerHaveBall())
     {
-        StateTreeEnterConditions = EPlayerState::TakePassingBall;
+        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
     }
 }

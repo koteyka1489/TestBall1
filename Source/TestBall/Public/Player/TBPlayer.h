@@ -16,17 +16,9 @@ class UTBPlayerAnimationComponent;
 class UTBBallComputeDataComponent;
 struct ShootingData;
 struct PassingData;
-
 class ATBAIController;
-
-UENUM(BlueprintType)
-enum class EPlayerState : uint8
-{
-    MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
-    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting"),
-    PassBall UMETA(DisplayName = "PassBall"),
-    TakePassingBall UMETA(DisplayName = "TakePassingBall")
-};
+class UTBPlayerStateComponent;
+enum class EPlayerState : uint8;
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -84,7 +76,8 @@ public:
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
-    void SetStateTreeEnterCondition(EPlayerState State_in);
+    void SetPlayerState(EPlayerState State);
+    EPlayerState GetPlayerState();
 
 protected:
     virtual void BeginPlay() override;
@@ -94,6 +87,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTBBallComputeDataComponent* BallComputeDataComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTBPlayerStateComponent* PlayerStateComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     int32 NTeam = 0;
@@ -119,15 +115,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float RotationSpeed = 5.0f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerState")
-    EPlayerState StateTreeEnterConditions = EPlayerState::MoveToBallAndControl;
-
 private:
     void CheckMoveToBall();
     void MoveToBallAndShoot();
 
     void OnBallHit();
-
     void UpdatePlayerState();
 
     bool IsMovingToBall     = false;

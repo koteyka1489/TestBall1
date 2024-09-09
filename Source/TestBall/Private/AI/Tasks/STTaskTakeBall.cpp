@@ -2,6 +2,7 @@
 
 #include "AI/Tasks/STTaskTakeBall.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBPlayerStateComponent.h"
 #include "Components\TBPlayerAnimationComponent.h"
 
 USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
@@ -26,7 +27,7 @@ EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, c
 
         if (Player->IsTakeBallComplete())
         {
-            Player->SetStateTreeEnterCondition(EPlayerState::PassBall);
+            Player->SetPlayerState(EPlayerState::PassBall);
             FinishTask();
         }
     }
