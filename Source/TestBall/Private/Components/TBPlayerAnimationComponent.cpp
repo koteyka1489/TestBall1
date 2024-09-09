@@ -7,6 +7,7 @@
 #include "Animation/AnimMontage.h"
 #include "Ball\Ball1.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 // Sets default values for this component's properties
 UTBPlayerAnimationComponent::UTBPlayerAnimationComponent()
@@ -21,34 +22,32 @@ void UTBPlayerAnimationComponent::BeginPlay()
     Player = Cast<ATBPlayer>(GetOwner());
     if (Player)
     {
-        Ball = Player->GetBallPtr();
+        Ball                     = Player->GetBallPtr();
+        BallComputeDataComponent = Player->GetBallComputeDataComponent();
     }
     InitAnimationNotify();
 }
 
-bool UTBPlayerAnimationComponent::Shoot(float VecToBallLenght)
-{
-    if (VecToBallLenght <= ShootTheBallDistance + 50.0f && !ShootAnimationExecuted)
-    {
-        if (Ball && ShotAnimMontage)
-        {
-            ReadyToShoot = true;
-            Player->SetRotationPlayerOnBall();
-            PlayAnimMontage(ShotAnimMontage);
-            ShootAnimationExecuted = true;
-            return true;
-        }
-    }
-    return false;
-}
-
-void UTBPlayerAnimationComponent::PassBall(float VecToBallLenght)
+void UTBPlayerAnimationComponent::PassBall()
 {
     if (Ball && PassAnimMontage)
     {
         PassAnimationExecuted = true;
         Player->SetRotationPlayerOnBall();
         PlayAnimMontage(PassAnimMontage);
+    }
+}
+
+void UTBPlayerAnimationComponent::ShootBall()
+{
+    if (!Ball || !ShotAnimMontage) return;
+
+    if (BallComputeDataComponent->GetDistanceToBall() <= (ShootTheBallDistance + 50.0f) && !ShootAnimationExecuted)
+    {
+        ReadyToShoot = true;
+        Player->SetRotationPlayerOnBall();
+        PlayAnimMontage(ShotAnimMontage);
+        ShootAnimationExecuted = true;
     }
 }
 
@@ -77,7 +76,7 @@ void UTBPlayerAnimationComponent::InitAnimationNotify()
 
 void UTBPlayerAnimationComponent::InitShotAnimNotify()
 {
-    auto ShotNotifyEvents = ShotAnimMontage->Notifies;
+    auto& ShotNotifyEvents = ShotAnimMontage->Notifies;
     for (auto& ShotNotifyEvent : ShotNotifyEvents)
     {
         auto ShootEndNotify = Cast<UTBShootEndAnimNotify>(ShotNotifyEvent.Notify);
@@ -90,7 +89,7 @@ void UTBPlayerAnimationComponent::InitShotAnimNotify()
 
 void UTBPlayerAnimationComponent::InitPassAnimNotify()
 {
-    auto PassNotifyEvents = PassAnimMontage->Notifies;
+    auto& PassNotifyEvents = PassAnimMontage->Notifies;
     for (auto& PassNotifyEvent : PassNotifyEvents)
     {
         auto PassEndNotify = Cast<UTBPassEndAnimNotify>(PassNotifyEvent.Notify);
@@ -103,7 +102,7 @@ void UTBPlayerAnimationComponent::InitPassAnimNotify()
 
 void UTBPlayerAnimationComponent::InitTakeBallAnimNotify()
 {
-    auto TakeBallNotifyEvents = TakeBallAnimMontage->Notifies;
+    auto& TakeBallNotifyEvents = TakeBallAnimMontage->Notifies;
     for (auto& TakeBallNotifyEvent : TakeBallNotifyEvents)
     {
         auto TakeBallEndNotify = Cast<UTBTakeBallEndAnimNotify>(TakeBallNotifyEvent.Notify);

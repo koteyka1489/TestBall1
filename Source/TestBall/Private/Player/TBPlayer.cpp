@@ -51,7 +51,7 @@ void ATBPlayer::Tick(float DeltaTime)
 
 bool ATBPlayer::IsCanMakePass()
 {
-    return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetPassBallDistance() + 50.0);
+    return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetPassBallDistance() + 50.0f);
 }
 
 bool ATBPlayer::IsCanMakeShoot()
@@ -59,16 +59,6 @@ bool ATBPlayer::IsCanMakeShoot()
     return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetShootTheBallDistance() + 50.0f);
 }
 
-void ATBPlayer::PassBall()
-{
-    PlayerAnimationComponent->PassBall(BallComputeDataComponent->GetDistanceToBall());
-}
-
-
-void ATBPlayer::ShootBall()
-{
-    PlayerAnimationComponent->Shoot(BallComputeDataComponent->GetDistanceToBall());
-}
 
 bool ATBPlayer::IsCanTakeBall()
 {
@@ -124,7 +114,7 @@ void ATBPlayer::CheckMoveToBall()
 void ATBPlayer::MoveToBallAndShoot()
 {
     CheckMoveToBall();
-    PlayerAnimationComponent->Shoot(BallComputeDataComponent->GetDistanceToBall());
+    PlayerAnimationComponent->ShootBall();
 }
 
 void ATBPlayer::OnBallHit() {}

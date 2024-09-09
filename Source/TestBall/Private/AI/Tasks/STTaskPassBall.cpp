@@ -11,7 +11,7 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        Player->PassBall();
+        Player->GetPlayerAnimationComponent()->PassBall();
     }
 
     Super::EnterState(Context, Transition);

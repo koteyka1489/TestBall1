@@ -37,13 +37,13 @@ public:
     UTBPlayerStateComponent* GetPlayerStateComponent() { return PlayerStateComponent; }
     ABall1* GetBallPtr();
 
-    bool IsPlayerHaveBall() { return PlayerHaveBall; }
+    bool IsPlayerHaveBall() const { return PlayerHaveBall; }
     void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
 
-    bool IsReadyToShoot() { return PlayerReadyToShoot; }
+    bool IsReadyToShoot() const { return PlayerReadyToShoot; }
     void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
 
-    float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
+    float GetMaxDistanceToMoveTheBall() const { return MaxDistanceToMoveTheBall; }
 
     bool IsCanMakePass();
     bool IsCanMakeShoot();
@@ -52,8 +52,7 @@ public:
     bool IsMoveToBallComplete();
 
     void MoveToBall();
-    void PassBall();
-    void ShootBall();
+ 
     void SetRotationPlayerOnBall();
 
     UFUNCTION(BlueprintCallable)
