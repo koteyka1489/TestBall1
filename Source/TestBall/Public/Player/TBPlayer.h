@@ -31,54 +31,35 @@ public:
     ATBPlayer();
     virtual void Tick(float DeltaTime) override;
 
-    void MoveToBall();
+    UTBPlayerAnimationComponent* GetPlayerAnimationComponent() { return PlayerAnimationComponent; }
+    UTBBrainComponent* GetBrainComponent() { return BrainComponent; }
+    UTBBallComputeDataComponent* GetBallComputeDataComponent() { return BallComputeDataComponent; }
+    UTBPlayerStateComponent* GetPlayerStateComponent() { return PlayerStateComponent; }
+    ABall1* GetBallPtr();
 
     bool IsPlayerHaveBall() { return PlayerHaveBall; }
     void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
 
-    void SetRotationPlayerOnBall();
-    UTBPlayerAnimationComponent* GetPlayerAnimationComponent() { return PlayerAnimationComponent; }
     bool IsReadyToShoot() { return PlayerReadyToShoot; }
     void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
 
     float GetMaxDistanceToMoveTheBall() { return MaxDistanceToMoveTheBall; }
 
     bool IsCanMakePass();
-    FVector FindVecMoveToPassBallPosition();
-
     bool IsCanMakeShoot();
-    FVector FindVecMoveToShootBallPosition();
-
-    void PassBall();
-    bool IsPassAnimationExecuted();
-
-    FVector GetVectorPlayerToBall();
-
-    void ShootBall();
-    bool IsShootAnimationExecuted();
-
-    void TakeBall();
     bool IsCanTakeBall();
     bool IsTakeBallComplete();
-
-    FVector GetBallLocation();
     bool IsMoveToBallComplete();
 
-    ShootingData GetShootingData();
-    PassingData GetPassingData();
-
-    ABall1* GetBallPtr();
+    void MoveToBall();
+    void PassBall();
+    void ShootBall();
+    void SetRotationPlayerOnBall();
 
     UFUNCTION(BlueprintCallable)
     void MoveToTarget(FVector Location);
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
-
-    void SetPlayerState(EPlayerState State);
-    EPlayerState GetPlayerState();
-
-    UTBBrainComponent* GetBrainComponent() { return BrainComponent; }
-
 
 protected:
     virtual void BeginPlay() override;

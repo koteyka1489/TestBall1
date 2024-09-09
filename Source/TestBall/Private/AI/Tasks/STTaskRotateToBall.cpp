@@ -2,6 +2,8 @@
 
 #include "AI/Tasks/STTaskRotateToBall.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBBallComputeDataComponent.h"
+
 
 USTTaskRotateToBall::USTTaskRotateToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
@@ -11,7 +13,7 @@ EStateTreeRunStatus USTTaskRotateToBall::Tick(FStateTreeExecutionContext& Contex
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        FVector VecToBall = Player->GetVectorPlayerToBall();
+        FVector VecToBall = Player->GetBallComputeDataComponent()->GetVecPlayerToBall();
         VecToBall.Z       = 0.0f;
 
         FRotator TargetRotation = VecToBall.Rotation();

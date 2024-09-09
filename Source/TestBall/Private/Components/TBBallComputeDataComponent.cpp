@@ -52,7 +52,7 @@ FVector UTBBallComputeDataComponent::FindVecMoveToShootBallPosition()
 
         float GoalVecLenght = VecToBallLenght - ShootTheBallDistance + (ShootTheBallDistance / 3);
 
-        return VecToBall.GetSafeNormal() * GoalVecLenght;
+        return Player->GetActorLocation() +  (VecToBall.GetSafeNormal() * GoalVecLenght);
     }
     return FVector::Zero();
 }

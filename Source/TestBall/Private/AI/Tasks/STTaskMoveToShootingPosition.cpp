@@ -3,6 +3,7 @@
 #include "AI/Tasks/STTaskMoveToShootingPosition.h"
 #include "Player\TBPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 USTTaskMoveToShootingPosition::USTTaskMoveToShootingPosition(const FObjectInitializer& ObjectInitializer)
     : UStateTreeTaskBlueprintBase(ObjectInitializer)
@@ -14,7 +15,7 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        FVector Target = Player->FindVecMoveToShootBallPosition();
+        FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
         Player->MoveToTarget(Target);
 
         if (Player->IsCanMakeShoot())

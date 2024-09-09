@@ -3,6 +3,7 @@
 #include "AI/Tasks/STTaskMoveToPassPosition.h"
 #include "Components\TBPlayerAnimationComponent.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 USTTaskMoveToPassPosition::USTTaskMoveToPassPosition(const FObjectInitializer& ObjectInitializer)
     : UStateTreeTaskBlueprintBase(ObjectInitializer)
@@ -14,7 +15,7 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& 
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        FVector Target = Player->FindVecMoveToPassBallPosition();
+        FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
 
         Player->MoveToTarget(Target);
 

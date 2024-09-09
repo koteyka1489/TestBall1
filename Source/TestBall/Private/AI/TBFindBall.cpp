@@ -2,6 +2,7 @@
 
 #include "AI/TBFindBall.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 UTBFindBall::UTBFindBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer)
 {
@@ -20,7 +21,7 @@ EStateTreeRunStatus UTBFindBall::Tick(FStateTreeExecutionContext& Context, const
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        ClosestBallLocation = Player->GetBallLocation();
+        ClosestBallLocation = Player->GetBallComputeDataComponent()->GetBallLocation();
     }
 
     Super::Tick(Context, DeltaTime);

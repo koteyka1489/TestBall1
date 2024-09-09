@@ -24,7 +24,7 @@ EStateTreeRunStatus USTTaskShootBallToCage::Tick(FStateTreeExecutionContext& Con
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        if (!Player->IsShootAnimationExecuted())
+        if (!Player->GetPlayerAnimationComponent()->IsShootAnimationExecuted())
         {
             FinishTask();
         }

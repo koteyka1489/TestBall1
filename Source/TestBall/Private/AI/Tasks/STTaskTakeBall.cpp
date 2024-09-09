@@ -22,12 +22,12 @@ EStateTreeRunStatus USTTaskTakeBall::Tick(FStateTreeExecutionContext& Context, c
 
         if (Player->IsCanTakeBall())
         {
-            Player->TakeBall();
+            Player->GetPlayerAnimationComponent()->TakeBall();
         }
 
         if (Player->IsTakeBallComplete())
         {
-            Player->SetPlayerState(EPlayerState::PassBall);
+            Player->GetPlayerStateComponent()->SetPlayerState(EPlayerState::PassBall);
             FinishTask();
         }
     }

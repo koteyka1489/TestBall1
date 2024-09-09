@@ -2,6 +2,7 @@
 
 #include "AI/Tasks/STTaskTBMoveToBall.h"
 #include "Player\TBPlayer.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 USTTaskTBMoveToBall::USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
@@ -10,7 +11,7 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        Player->MoveToTarget(Player->GetBallLocation());
+        Player->MoveToTarget(Player->GetBallComputeDataComponent()->GetBallLocation());
     }
 
     if (Player->IsMoveToBallComplete())

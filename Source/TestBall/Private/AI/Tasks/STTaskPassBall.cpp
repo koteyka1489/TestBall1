@@ -23,7 +23,7 @@ EStateTreeRunStatus USTTaskPassBall::Tick(FStateTreeExecutionContext& Context, c
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        if (!Player->IsPassAnimationExecuted())
+        if (!Player->GetPlayerAnimationComponent()->IsPassAnimationExecuted())
         {
             FinishTask();
         }

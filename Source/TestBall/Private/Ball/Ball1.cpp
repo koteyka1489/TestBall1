@@ -84,7 +84,7 @@ void ABall1::HandleOnHit(
     {
         OnBallHit.Broadcast();
 
-        ShootingData ShootingData = Player->GetShootingData();
+        ShootingData ShootingData = Player->GetBallComputeDataComponent()->GetShootingData();
 
         StaticMeshComponent->SetPhysicsLinearVelocity(ShootingData.ShootingDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(ShootingData.ShootingRotation);
@@ -95,7 +95,7 @@ void ABall1::HandleOnHit(
     // PASS
     if (PlayerPassing)
     {
-        PassingData Passing = Player->GetPassingData();
+        PassingData Passing = Player->GetBallComputeDataComponent()->GetPassingData();
 
         FString Message = FString::Printf(TEXT("Passing Velocity - %s"), *Passing.PassDirection.ToString());
         GEngine->AddOnScreenDebugMessage(1, 3, FColor::Red, Message);

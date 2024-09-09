@@ -54,19 +54,9 @@ bool ATBPlayer::IsCanMakePass()
     return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetPassBallDistance() + 50.0);
 }
 
-FVector ATBPlayer::FindVecMoveToPassBallPosition()
-{
-    return BallComputeDataComponent->FindVecMoveToPassBallPosition();
-}
-
 bool ATBPlayer::IsCanMakeShoot()
 {
     return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetShootTheBallDistance() + 50.0f);
-}
-
-FVector ATBPlayer::FindVecMoveToShootBallPosition()
-{
-    return GetActorLocation() + BallComputeDataComponent->FindVecMoveToShootBallPosition();
 }
 
 void ATBPlayer::PassBall()
@@ -74,29 +64,10 @@ void ATBPlayer::PassBall()
     PlayerAnimationComponent->PassBall(BallComputeDataComponent->GetDistanceToBall());
 }
 
-bool ATBPlayer::IsPassAnimationExecuted()
-{
-    return PlayerAnimationComponent->IsPassAnimationExecuted();
-}
-
-FVector ATBPlayer::GetVectorPlayerToBall()
-{
-    return BallComputeDataComponent->GetVecPlayerToBall();
-}
 
 void ATBPlayer::ShootBall()
 {
     PlayerAnimationComponent->Shoot(BallComputeDataComponent->GetDistanceToBall());
-}
-
-bool ATBPlayer::IsShootAnimationExecuted()
-{
-    return PlayerAnimationComponent->IsShootAnimationExecuted();
-}
-
-void ATBPlayer::TakeBall()
-{
-    PlayerAnimationComponent->TakeBall();
 }
 
 bool ATBPlayer::IsCanTakeBall()
@@ -113,25 +84,12 @@ bool ATBPlayer::IsTakeBallComplete()
     return PlayerAnimationComponent->IsTakeBallAnimationExecuted() && IsPlayerHaveBall();
 }
 
-FVector ATBPlayer::GetBallLocation()
-{
-    return BallComputeDataComponent->GetBallLocation();
-}
 
 bool ATBPlayer::IsMoveToBallComplete()
 {
     return BallComputeDataComponent->GetDistanceToBall() < 100.0;
 }
 
-ShootingData ATBPlayer::GetShootingData()
-{
-    return BallComputeDataComponent->GetShootingData();
-}
-
-PassingData ATBPlayer::GetPassingData()
-{
-    return BallComputeDataComponent->GetPassingData();
-}
 
 ABall1* ATBPlayer::GetBallPtr()
 {
@@ -203,15 +161,6 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
-void ATBPlayer::SetPlayerState(EPlayerState State)
-{
-    PlayerStateComponent->SetPlayerState(State);
-}
-
-EPlayerState ATBPlayer::GetPlayerState()
-{
-    return PlayerStateComponent->GetPlayerState();
-}
 
 void ATBPlayer::UpdatePlayerState()
 {
