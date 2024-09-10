@@ -200,6 +200,16 @@ void ATBPlayer::UpdateTextComponent()
             TextRenderComponent->SetText(FText::FromString("RANDOM RUNING"));
             break;
         }
+        case EPlayerState::MoveToBallAndControl:
+        {
+            TextRenderComponent->SetText(FText::FromString("Move To Ball And Control"));
+            break;
+        }
+        case EPlayerState::MoveToBallAndShooting:
+        {
+            TextRenderComponent->SetText(FText::FromString("Move To Ball And Shooting"));
+            break;
+        }
         default: break;
     }
 }
