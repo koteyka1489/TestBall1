@@ -49,7 +49,6 @@ void ATBPlayer::BeginPlay()
 void ATBPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    UpdatePlayerState();
     UpdateTextComponent(); 
     if (IsMovingToBall)
     {
@@ -153,18 +152,6 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
 {
     FRotator SmoothRotation = FMath::RInterpTo(this->GetActorRotation(), Rotation, DeltaTime, RotationSpeed);
     SetActorRotation(SmoothRotation);
-}
-
-void ATBPlayer::UpdatePlayerState()
-{
-    if (IsPlayerHaveBall())
-    {
-        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
-    }
-    if (!IsPlayerHaveBall())
-    {
-        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
-    }
 }
 
 void ATBPlayer::OnBallPassed()

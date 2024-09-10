@@ -54,7 +54,7 @@ public:
     void OnBallPassed();
     void OnBallTaked();
     void MoveToBall();
- 
+
     void SetRotationPlayerOnBall();
 
     UFUNCTION(BlueprintCallable)
@@ -95,9 +95,6 @@ protected:
 private:
     void CheckMoveToBall();
     void MoveToBallAndShoot();
-    void UpdatePlayerState();
-
-
 
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
