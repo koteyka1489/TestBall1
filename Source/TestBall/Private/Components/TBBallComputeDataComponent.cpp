@@ -102,6 +102,10 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
     if (Player)
     {
         auto PassedPlayer    = Player->GetBrainComponent()->GetPassedPlayer();
+
+        FString Message = FString::Printf(TEXT("TEAM N - %s"), *PassedPlayer->GetActorLocation().ToString());
+        GEngine->AddOnScreenDebugMessage(6, 3, FColor::Red, Message);
+
         Result.PassDirection = PassedPlayer->GetActorLocation() - Player->GetActorLocation();
         Result.PassRotation  = FVector::Zero();
         return Result;

@@ -20,6 +20,7 @@ class ATBAIController;
 class UTBPlayerStateComponent;
 enum class EPlayerState : uint8;
 class UTBBrainComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -50,7 +51,8 @@ public:
     bool IsCanTakeBall();
     bool IsTakeBallComplete();
     bool IsMoveToBallComplete();
-
+    void OnBallPassed();
+    void OnBallTaked();
     void MoveToBall();
  
     void SetRotationPlayerOnBall();
@@ -75,6 +77,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTBBrainComponent* BrainComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* TextRenderComponent;
+
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
 
@@ -92,10 +97,11 @@ private:
     void MoveToBallAndShoot();
     void UpdatePlayerState();
 
-    void OnBallPassed();
-    void OnBallTaked();
+
 
     void MessageToPassedPlayer();
+    void InitTextRenderComponent();
+    void UpdateTextComponent();
 
     bool IsMovingToBall     = false;
     bool PlayerReadyToShoot = false;

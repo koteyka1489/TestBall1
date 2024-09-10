@@ -26,9 +26,9 @@ void UTBBrainComponent::SelectPlayerToPass()
     {
         PassedPlayer = Team[0];
     }
-    else
-    {
-        int32 RandIndex = FMath::RandRange(0, Team.Num() - 1);
-        PassedPlayer    = Team[RandIndex];
-    }
+    //else
+    //{
+    //    int32 RandIndex = FMath::RandRange(0, Team.Num() - 1);
+    //    PassedPlayer    = Team[RandIndex];
+    //}
 }

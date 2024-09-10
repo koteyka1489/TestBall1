@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components\TBPlayerAnimationComponent.h"
 #include "Components\TBBallComputeDataComponent.h"
+#include "Components\TBPlayerStateComponent.h"
 
 struct ShootingData;
 
@@ -64,7 +65,7 @@ void ABall1::HandleOnHit(
             PlayerReadyToShot = Player->IsReadyToShoot() && PlayerAnimationComponent->IsShootAnimationExecuted();
             PlayerStopingBall = PlayerAnimationComponent->IsStopingBall();
             PlayerPassing     = PlayerAnimationComponent->IsPassAnimationExecuted();
-            PlayerTakingBall  = PlayerAnimationComponent->IsTakeBallAnimationExecuted();
+            PlayerTakingBall  = PlayerAnimationComponent->IsTakeBallAnimationExecuted() || Player->GetPlayerStateComponent()->GetPlayerState() == EPlayerState::TakePassingBall;
         }
     }
 
@@ -100,7 +101,7 @@ void ABall1::HandleOnHit(
 
         StaticMeshComponent->SetPhysicsLinearVelocity(Passing.PassDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(Passing.PassRotation);
-        OnBallPassed.Broadcast();
+        Player->OnBallPassed();
 
         return;
     }
@@ -110,6 +111,7 @@ void ABall1::HandleOnHit(
     {
         StaticMeshComponent->SetPhysicsLinearVelocity(FVector::Zero());
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
+
         return;
     }
 
@@ -119,7 +121,7 @@ void ABall1::HandleOnHit(
         FVector LinVel = Player->GetActorForwardVector() * 100;
         StaticMeshComponent->SetPhysicsLinearVelocity(LinVel);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
-        OnBallTaked.Broadcast();
+        Player->OnBallTaked();
         
         return;
     }

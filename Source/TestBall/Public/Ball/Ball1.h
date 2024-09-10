@@ -6,8 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Ball1.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnBallPassed);
-DECLARE_MULTICAST_DELEGATE(FOnBallTaked);
+
 
 class UStaticMeshComponent;
 class UTBStaticMeshComponent;
@@ -29,8 +28,7 @@ public:
     void HandleOnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
         const FHitResult& Hit);
 
-    FOnBallPassed OnBallPassed;
-    FOnBallTaked OnBallTaked;
+
 
 protected:
     virtual void BeginPlay() override;

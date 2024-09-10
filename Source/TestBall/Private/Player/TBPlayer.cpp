@@ -16,6 +16,7 @@
 #include "Components\TBPlayerStateComponent.h"
 #include "Components\TBBrainComponent.h"
 #include "Ball\Ball1.h"
+#include "Components\TextRenderComponent.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -30,26 +31,31 @@ ATBPlayer::ATBPlayer()
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
     PlayerStateComponent     = CreateDefaultSubobject<UTBPlayerStateComponent>("PlayerStateComponent");
     BrainComponent           = CreateDefaultSubobject<UTBBrainComponent>("BrainComponent");
+    TextRenderComponent      = CreateDefaultSubobject<UTextRenderComponent>("UTextRenderComponent");
+    TextRenderComponent->SetupAttachment(GetRootComponent());
 
     AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ATBAIController::StaticClass();
+    InitTextRenderComponent();
+    UpdateTextComponent();
 }
 
 void ATBPlayer::BeginPlay()
 {
     Super::BeginPlay();
-    BallComputeDataComponent->GetBallPtr()->OnBallPassed.AddUObject(this, &ATBPlayer::OnBallPassed);
-    BallComputeDataComponent->GetBallPtr()->OnBallTaked.AddUObject(this, &ATBPlayer::OnBallTaked);
+    
 }
 
 void ATBPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
+    UpdatePlayerState();
+    UpdateTextComponent(); 
     if (IsMovingToBall)
     {
         MoveToBall();
     }
+
 }
 
 bool ATBPlayer::IsCanMakePass()
@@ -61,7 +67,6 @@ bool ATBPlayer::IsCanMakeShoot()
 {
     return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetShootTheBallDistance() + 50.0f);
 }
-
 
 bool ATBPlayer::IsCanTakeBall()
 {
@@ -77,12 +82,10 @@ bool ATBPlayer::IsTakeBallComplete()
     return PlayerAnimationComponent->IsTakeBallAnimationExecuted() && IsPlayerHaveBall();
 }
 
-
 bool ATBPlayer::IsMoveToBallComplete()
 {
     return BallComputeDataComponent->GetDistanceToBall() < 100.0;
 }
-
 
 ABall1* ATBPlayer::GetBallPtr()
 {
@@ -120,7 +123,6 @@ void ATBPlayer::MoveToBallAndShoot()
     PlayerAnimationComponent->ShootBall();
 }
 
-
 void ATBPlayer::SetRotationPlayerOnBall()
 {
 
@@ -153,27 +155,26 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
-//
-//void ATBPlayer::UpdatePlayerState()
-//{
-//    if (IsPlayerHaveBall())
-//    {
-//        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
-//    }
-//    if (!IsPlayerHaveBall())
-//    {
-//        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
-//    }
-//}
+void ATBPlayer::UpdatePlayerState()
+{
+    if (IsPlayerHaveBall())
+    {
+        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
+    }
+    if (!IsPlayerHaveBall())
+    {
+        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
+    }
+}
 
-void ATBPlayer::OnBallPassed() 
+void ATBPlayer::OnBallPassed()
 {
     SetPlayerHaveBall(false);
     MessageToPassedPlayer();
     this->PlayerStateComponent->SetPlayerState(EPlayerState::RandomRunning);
 }
 
-void ATBPlayer::OnBallTaked() 
+void ATBPlayer::OnBallTaked()
 {
     SetPlayerHaveBall(true);
     this->PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
@@ -185,3 +186,33 @@ void ATBPlayer::MessageToPassedPlayer()
     PassedPlayer->GetPlayerStateComponent()->SetPlayerState(EPlayerState::TakePassingBall);
 }
 
+void ATBPlayer::InitTextRenderComponent()
+{
+    TextRenderComponent->SetTextRenderColor(FColor::Green);
+    TextRenderComponent->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+    TextRenderComponent->SetWorldSize(50.0f);
+    TextRenderComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
+}
+
+void ATBPlayer::UpdateTextComponent() 
+{
+    switch (PlayerStateComponent->GetPlayerState())
+    {
+        case EPlayerState::PassBall:
+        {
+            TextRenderComponent->SetText(FText::FromString("PASS BALL"));
+            break;
+        }
+        case EPlayerState::TakePassingBall:
+        {
+            TextRenderComponent->SetText(FText::FromString("TAKE PASSING BALL"));
+            break;
+        }
+        case EPlayerState::RandomRunning:
+        {
+            TextRenderComponent->SetText(FText::FromString("RANDOM RUNING"));
+            break;
+        }
+        default: break;
+    }
+}
