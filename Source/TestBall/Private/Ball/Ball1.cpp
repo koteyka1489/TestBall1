@@ -55,7 +55,6 @@ void ABall1::HandleOnHit(
     bool PlayerPassing     = false;
     bool PlayerTakingBall  = false;
 
-
     if (Player)
     {
         auto PlayerAnimationComponent = Cast<UTBPlayerAnimationComponent>(Player->GetPlayerAnimationComponent());
@@ -82,7 +81,6 @@ void ABall1::HandleOnHit(
     // SHOOT
     if (PlayerReadyToShot)
     {
-        OnBallHit.Broadcast();
 
         ShootingData ShootingData = Player->GetBallComputeDataComponent()->GetShootingData();
 
@@ -102,7 +100,8 @@ void ABall1::HandleOnHit(
 
         StaticMeshComponent->SetPhysicsLinearVelocity(Passing.PassDirection);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(Passing.PassRotation);
-        Player->SetPlayerHaveBall(false);
+        OnBallPassed.Broadcast();
+
         return;
     }
 
@@ -120,7 +119,8 @@ void ABall1::HandleOnHit(
         FVector LinVel = Player->GetActorForwardVector() * 100;
         StaticMeshComponent->SetPhysicsLinearVelocity(LinVel);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
-        Player->SetPlayerHaveBall(true);
+        OnBallTaked.Broadcast();
+        
         return;
     }
 }

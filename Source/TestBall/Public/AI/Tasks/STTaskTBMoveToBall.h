@@ -17,7 +17,6 @@ class TESTBALL_API USTTaskTBMoveToBall : public UStateTreeTaskBlueprintBase
 public:
     USTTaskTBMoveToBall(const FObjectInitializer& ObjectInitializer);
 
-
 protected:
     virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) override;
 };

@@ -15,6 +15,7 @@
 #include "AI\TBAIController.h"
 #include "Components\TBPlayerStateComponent.h"
 #include "Components\TBBrainComponent.h"
+#include "Ball\Ball1.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -37,12 +38,14 @@ ATBPlayer::ATBPlayer()
 void ATBPlayer::BeginPlay()
 {
     Super::BeginPlay();
+    BallComputeDataComponent->GetBallPtr()->OnBallPassed.AddUObject(this, &ATBPlayer::OnBallPassed);
+    BallComputeDataComponent->GetBallPtr()->OnBallTaked.AddUObject(this, &ATBPlayer::OnBallTaked);
 }
 
 void ATBPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    UpdatePlayerState();
+
     if (IsMovingToBall)
     {
         MoveToBall();
@@ -117,7 +120,6 @@ void ATBPlayer::MoveToBallAndShoot()
     PlayerAnimationComponent->ShootBall();
 }
 
-void ATBPlayer::OnBallHit() {}
 
 void ATBPlayer::SetRotationPlayerOnBall()
 {
@@ -151,15 +153,35 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
+//
+//void ATBPlayer::UpdatePlayerState()
+//{
+//    if (IsPlayerHaveBall())
+//    {
+//        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
+//    }
+//    if (!IsPlayerHaveBall())
+//    {
+//        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
+//    }
+//}
 
-void ATBPlayer::UpdatePlayerState()
+void ATBPlayer::OnBallPassed() 
 {
-    if (IsPlayerHaveBall())
-    {
-        PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
-    }
-    if (!IsPlayerHaveBall())
-    {
-        PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
-    }
+    SetPlayerHaveBall(false);
+    MessageToPassedPlayer();
+    this->PlayerStateComponent->SetPlayerState(EPlayerState::RandomRunning);
 }
+
+void ATBPlayer::OnBallTaked() 
+{
+    SetPlayerHaveBall(true);
+    this->PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
+}
+
+void ATBPlayer::MessageToPassedPlayer()
+{
+    auto PassedPlayer = BrainComponent->GetPassedPlayer();
+    PassedPlayer->GetPlayerStateComponent()->SetPlayerState(EPlayerState::TakePassingBall);
+}
+

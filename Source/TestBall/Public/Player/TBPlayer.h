@@ -90,9 +90,12 @@ protected:
 private:
     void CheckMoveToBall();
     void MoveToBallAndShoot();
-
-    void OnBallHit();
     void UpdatePlayerState();
+
+    void OnBallPassed();
+    void OnBallTaked();
+
+    void MessageToPassedPlayer();
 
     bool IsMovingToBall     = false;
     bool PlayerReadyToShoot = false;

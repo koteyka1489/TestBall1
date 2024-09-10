@@ -9,10 +9,11 @@
 UENUM(BlueprintType)
 enum class EPlayerState : uint8
 {
-    MoveToBallAndControl UMETA(DisplayName = "MoveToBallAndControl"),
-    MoveToBallAndShooting UMETA(DisplayName = "MoveToBallAndShooting"),
-    PassBall UMETA(DisplayName = "PassBall"),
-    TakePassingBall UMETA(DisplayName = "TakePassingBall")
+    MoveToBallAndControl UMETA(DisplayName = "Move To Ball And Control"),
+    MoveToBallAndShooting UMETA(DisplayName = "Move To Ball And Shooting"),
+    PassBall UMETA(DisplayName = "Pass Ball"),
+    TakePassingBall UMETA(DisplayName = "Take Passing Ball"),
+    RandomRunning UMETA(DisplayName = "Random Running")
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

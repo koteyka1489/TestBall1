@@ -6,7 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Ball1.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnBallHit);
+DECLARE_MULTICAST_DELEGATE(FOnBallPassed);
+DECLARE_MULTICAST_DELEGATE(FOnBallTaked);
 
 class UStaticMeshComponent;
 class UTBStaticMeshComponent;
@@ -17,29 +18,28 @@ class TESTBALL_API ABall1 : public AActor
     GENERATED_BODY()
 
 public:
-    // Sets default values for this actor's properties
+
     ABall1();
     UTBStaticMeshComponent* GetStaticMeshComponent() { return StaticMeshComponent; }
 
     UFUNCTION(BlueprintCallable, Category = "BallPhysic")
     FVector GetBallPhysicVelocity();
 
+    UFUNCTION()
+    void HandleOnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+        const FHitResult& Hit);
+
+    FOnBallPassed OnBallPassed;
+    FOnBallTaked OnBallTaked;
+
 protected:
-    // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UTBStaticMeshComponent* StaticMeshComponent;
 
-
 public:
-    // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    UFUNCTION()
-    void HandleOnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-        const FHitResult& Hit);
-
-    FOnBallHit OnBallHit;
-
+    
 };

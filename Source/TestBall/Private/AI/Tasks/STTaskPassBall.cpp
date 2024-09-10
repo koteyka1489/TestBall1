@@ -3,6 +3,7 @@
 #include "AI/Tasks/STTaskPassBall.h"
 #include "Player\TBPlayer.h"
 #include "Components\TBPlayerAnimationComponent.h"
+#include "Components\TBBrainComponent.h"
 
 USTTaskPassBall::USTTaskPassBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
@@ -11,6 +12,7 @@ EStateTreeRunStatus USTTaskPassBall::EnterState(FStateTreeExecutionContext& Cont
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
+        Player->GetBrainComponent()->SelectPlayerToPass();
         Player->GetPlayerAnimationComponent()->PassBall();
     }
 

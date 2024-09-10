@@ -12,7 +12,6 @@
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void UTBBallComputeDataComponent::BeginPlay()
@@ -52,7 +51,7 @@ FVector UTBBallComputeDataComponent::FindVecMoveToShootBallPosition()
 
         float GoalVecLenght = VecToBallLenght - ShootTheBallDistance + (ShootTheBallDistance / 3);
 
-        return Player->GetActorLocation() +  (VecToBall.GetSafeNormal() * GoalVecLenght);
+        return Player->GetActorLocation() + (VecToBall.GetSafeNormal() * GoalVecLenght);
     }
     return FVector::Zero();
 }
@@ -102,13 +101,10 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
     PassingData Result{};
     if (Player)
     {
-        auto Team = Player->GetBrainComponent()->GetTeam();
-        if (Team.Num() > 0)
-        {
-            Result.PassDirection = Team[0]->GetActorLocation() - Player->GetActorLocation();
-            Result.PassRotation  = FVector::Zero();
-            return Result;
-        }
+        auto PassedPlayer    = Player->GetBrainComponent()->GetPassedPlayer();
+        Result.PassDirection = PassedPlayer->GetActorLocation() - Player->GetActorLocation();
+        Result.PassRotation  = FVector::Zero();
+        return Result;
     }
 
     return Result;
