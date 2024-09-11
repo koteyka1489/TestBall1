@@ -12,14 +12,15 @@
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
+    Player                            = Cast<ATBPlayer>(GetOwner());
+    Ball                              = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
 }
 
 void UTBBallComputeDataComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    Player = Cast<ATBPlayer>(GetOwner());
-    Ball   = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
+    
 }
 
 FVector UTBBallComputeDataComponent::GetBallLocation()
@@ -164,4 +165,45 @@ FVector UTBBallComputeDataComponent::GetVecPlayerToBall()
         return GetBallLocation() - Player->GetActorLocation();
     }
     return FVector::Zero();
+}
+
+FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
+{
+    
+    FVector BallVelocity = Ball->GetVelocity();
+    FVector PlayerPosition = Player->GetActorLocation();
+    FVector Result         = PlayerPosition;
+    if (BallVelocity.Length() < 100) return Result;
+   
+    
+    FVector PlayerRightUnitVec = Player->GetActorRightVector();
+    FVector BallPostion        = Ball->GetActorLocation();
+    
+    FVector BallPosAddVel      = BallPostion + BallVelocity;
+
+    FVector VectorOffset          = PlayerPosition - BallVelocity;
+    FVector VectorOffsetNormalize = VectorOffset.GetSafeNormal();
+    float DotProduct              = VectorOffsetNormalize.Dot(PlayerRightUnitVec);
+    if (DotProduct <= -0.5f)
+    {
+        //Need Right Move
+        Result = PlayerPosition + (PlayerRightUnitVec * VectorOffset.Length());
+    }
+    if (DotProduct >= 0.5f)
+    {
+        // Need Left Move
+        Result = PlayerPosition + (PlayerRightUnitVec * -1.0f * VectorOffset.Length());
+    }
+
+
+    FString Message = FString::Printf(TEXT("Vector Offset - %s"), *VectorOffset.ToString());
+    GEngine->AddOnScreenDebugMessage(8, 10, FColor::Cyan, Message);
+
+    FString Message1 = FString::Printf(TEXT("Dot Product - %f"), DotProduct);
+    GEngine->AddOnScreenDebugMessage(9, 10, FColor::Cyan, Message1);
+
+    FString Message2 = FString::Printf(TEXT("Result - %s"), *Result.ToString());
+    GEngine->AddOnScreenDebugMessage(10, 10, FColor::Cyan, Message2);
+
+    return Result;
 }

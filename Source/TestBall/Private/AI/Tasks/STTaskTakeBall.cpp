@@ -4,11 +4,21 @@
 #include "Player\TBPlayer.h"
 #include "Components\TBPlayerStateComponent.h"
 #include "Components\TBPlayerAnimationComponent.h"
+#include "Components\TBBallComputeDataComponent.h"
 
 USTTaskTakeBall::USTTaskTakeBall(const FObjectInitializer& ObjectInitializer) : UStateTreeTaskBlueprintBase(ObjectInitializer) {}
 
 EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
+    {
+       FVector OffsetMove =  Player->GetBallComputeDataComponent()->FindCorrectionPlayerPositionForTakeBall();
+        Player->MoveToTarget(OffsetMove);
+
+    }
+
+
     Super::EnterState(Context, Transition);
     return RunStatus;
 }

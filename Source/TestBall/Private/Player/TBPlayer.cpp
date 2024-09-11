@@ -54,7 +54,7 @@ void ATBPlayer::Tick(float DeltaTime)
     {
         MoveToBall();
     }
-
+    BallComputeDataComponent->FindCorrectionPlayerPositionForTakeBall();
 }
 
 bool ATBPlayer::IsCanMakePass()
@@ -158,7 +158,7 @@ void ATBPlayer::OnBallPassed()
 {
     SetPlayerHaveBall(false);
     MessageToPassedPlayer();
-    this->PlayerStateComponent->SetPlayerState(EPlayerState::RandomRunning);
+    this->PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
 }
 
 void ATBPlayer::OnBallTaked()

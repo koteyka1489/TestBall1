@@ -66,6 +66,8 @@ public:
 
     FVector GetVecPlayerToBall();
 
+    FVector FindCorrectionPlayerPositionForTakeBall();
+
 protected:
     virtual void BeginPlay() override;
 
@@ -87,6 +89,7 @@ private:
     bool BallIsCloseLocation = false;
 
     TObjectPtr<ATBPlayer> Player = nullptr;
+    
 
     FVector VectorToBall = FVector::ZeroVector;
 };
