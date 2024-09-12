@@ -41,6 +41,19 @@ public:
     float zMax = 1000.0f;
 };
 
+USTRUCT(BlueprintType)
+struct FPassingRandoms
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Passing")
+    float x = 100.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Passing")
+    float y = 100.f;
+};
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TESTBALL_API UTBBallComputeDataComponent : public UActorComponent
 {
@@ -80,6 +93,12 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
     FShootingRandoms ShootingRandoms;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Passing")
+    FPassingRandoms PassingRandoms;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TakeBall")
+    float CoeffOffsetTakeBall = 1.3f;
+
 private:
     void CheckBallLocationAndDirection();
     void CheckPlayerToBallDirection();
@@ -89,7 +108,6 @@ private:
     bool BallIsCloseLocation = false;
 
     TObjectPtr<ATBPlayer> Player = nullptr;
-    
 
     FVector VectorToBall = FVector::ZeroVector;
 };

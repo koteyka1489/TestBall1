@@ -106,7 +106,12 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
         FString Message = FString::Printf(TEXT("TEAM N - %s"), *PassedPlayer->GetActorLocation().ToString());
         GEngine->AddOnScreenDebugMessage(6, 3, FColor::Red, Message);
 
-        Result.PassDirection = PassedPlayer->GetActorLocation() - Player->GetActorLocation();
+        float XRandPass = FMath::FRandRange(-PassingRandoms.x, PassingRandoms.x);
+        float YRandPass = FMath::FRandRange(-PassingRandoms.y, PassingRandoms.y);
+        FVector RandPassOffset(XRandPass, YRandPass, 0.0f);
+        FVector ResultPassFirection = (PassedPlayer->GetActorLocation() - Player->GetActorLocation()) + RandPassOffset;
+
+        Result.PassDirection = ResultPassFirection;
         Result.PassRotation  = FVector::Zero();
         return Result;
     }
@@ -192,7 +197,7 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
         FString Message = FString::Printf(TEXT("Right Intersection - %s"), *RightIntersection.ToString());
         GEngine->AddOnScreenDebugMessage(10, 1, FColor::Cyan, Message);
         FVector Offset = RightIntersection - PlayerPosition;
-        FVector Result = PlayerPosition + (Offset * 1.5);
+        FVector Result = PlayerPosition + (Offset * CoeffOffsetTakeBall);
         return Result;
     }
     if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerLeftVec, LeftIntersection))
@@ -200,7 +205,7 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
         FString Message = FString::Printf(TEXT("Left Intersection - %s"), *LeftIntersection.ToString());
         GEngine->AddOnScreenDebugMessage(11, 1, FColor::Cyan, Message);
         FVector Offset = LeftIntersection - PlayerPosition;
-        FVector Result = PlayerPosition + (Offset * 1.5);
+        FVector Result = PlayerPosition + (Offset * CoeffOffsetTakeBall);
         return Result;
     }
 
