@@ -179,18 +179,18 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
     if (BallVelocity.Length() < 100) return PlayerPosition;
 
     FVector PlayerRightUnitVec = Player->GetActorRightVector();
-    FVector PlayerRightVec     = PlayerPosition + (PlayerRightUnitVec * 500.0f);
-    FVector PlayerLeftVec      = PlayerPosition + (-PlayerRightUnitVec * 500.0f);
+    FVector PlayerRightVec     = PlayerPosition + (PlayerRightUnitVec * MaxTackebleLenght);
+    FVector PlayerLeftVec      = PlayerPosition + (-PlayerRightUnitVec * MaxTackebleLenght);
 
     FVector BallPostion   = Ball->GetActorLocation();
-    FVector BallPosAddVel = BallPostion + BallVelocity;
+    FVector BallPosAddVel = BallPostion + BallVelocity * 2.0f;
 
     FVector RightIntersection = FVector::Zero();
     FVector LeftIntersection  = FVector::Zero();
 
-    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallPostion, BallPosAddVel, 1.0f, FColor::Red, 0.0f, 3.0f);
-    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerRightVec, 1.0f, FColor::Blue, 0.0f, 3.0f);
-    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerLeftVec, 1.0f, FColor::Magenta, 0.0f, 3.0f);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallPostion, BallPosAddVel, 1.0f, FColor::Red, 1.0f, 3.0f);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerRightVec, 1.0f, FColor::Blue, 1.0f, 3.0f);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerLeftVec, 1.0f, FColor::Magenta, 1.0f, 3.0f);
 
     if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerRightVec, RightIntersection))
     {

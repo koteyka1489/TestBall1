@@ -97,7 +97,10 @@ protected:
     FPassingRandoms PassingRandoms;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TakeBall")
-    float CoeffOffsetTakeBall = 1.3f;
+    float CoeffOffsetTakeBall = 1.2f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TakeBall")
+    float MaxTackebleLenght = 1000.0f;
 
 private:
     void CheckBallLocationAndDirection();
