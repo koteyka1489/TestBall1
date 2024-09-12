@@ -43,7 +43,8 @@ ATBPlayer::ATBPlayer()
 void ATBPlayer::BeginPlay()
 {
     Super::BeginPlay();
-    
+    GetCharacterMovement()->bOrientRotationToMovement = false;
+    bUseControllerRotationYaw                         = false;
 }
 
 void ATBPlayer::Tick(float DeltaTime)
@@ -54,7 +55,10 @@ void ATBPlayer::Tick(float DeltaTime)
     {
         MoveToBall();
     }
-    BallComputeDataComponent->FindCorrectionPlayerPositionForTakeBall();
+    if (bMoveToTargetNoRot)
+    {
+        MoveToTargetNoRotationTick();
+    }
 }
 
 bool ATBPlayer::IsCanMakePass()
@@ -154,11 +158,17 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
+void ATBPlayer::MoveToTargetNoRotation(FVector Location) 
+{
+    MoveToTargetNoRotVec = Location;
+    bMoveToTargetNoRot   = true;
+}
+
 void ATBPlayer::OnBallPassed()
 {
     SetPlayerHaveBall(false);
     MessageToPassedPlayer();
-    this->PlayerStateComponent->SetPlayerState(EPlayerState::TakePassingBall);
+    this->PlayerStateComponent->SetPlayerState(EPlayerState::Wait);
 }
 
 void ATBPlayer::OnBallTaked()
@@ -210,6 +220,32 @@ void ATBPlayer::UpdateTextComponent()
             TextRenderComponent->SetText(FText::FromString("Move To Ball And Shooting"));
             break;
         }
+        case EPlayerState::Wait:
+        {
+            TextRenderComponent->SetText(FText::FromString("WAIT"));
+            break;
+        }
         default: break;
     }
+}
+
+void ATBPlayer::MoveToTargetNoRotationTick() 
+{
+    float Dot = MoveToTargetNoRotVec.Dot(GetActorRightVector());
+    if (Dot >= 0.1f)
+    {
+        AddMovementInput(GetActorRightVector(), 1.0f);
+    }
+    if (Dot <= -0.1f)
+    {
+        AddMovementInput(GetActorRightVector(), -1.0f);
+    }
+
+    if (MoveToTargetNoRotVec.Length() <= 1.0f)
+    {
+        MoveToTargetNoRotVec = FVector::Zero();
+        bMoveToTargetNoRot   = false;
+    }
+ 
+    //AddMovementInput(MoveToTargetNoRotVec.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
 }

@@ -62,6 +62,8 @@ public:
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
+    void MoveToTargetNoRotation(FVector Location);
+
 protected:
     virtual void BeginPlay() override;
 
@@ -99,10 +101,14 @@ private:
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
     void UpdateTextComponent();
+    void MoveToTargetNoRotationTick();
 
     bool IsMovingToBall     = false;
     bool PlayerReadyToShoot = false;
 
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
+
+    FVector MoveToTargetNoRotVec = FVector::Zero();
+    bool bMoveToTargetNoRot      = false;
 };

@@ -20,8 +20,6 @@ UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 void UTBBallComputeDataComponent::BeginPlay()
 {
     Super::BeginPlay();
-
-    
 }
 
 FVector UTBBallComputeDataComponent::GetBallLocation()
@@ -103,7 +101,7 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
     PassingData Result{};
     if (Player)
     {
-        auto PassedPlayer    = Player->GetBrainComponent()->GetPassedPlayer();
+        auto PassedPlayer = Player->GetBrainComponent()->GetPassedPlayer();
 
         FString Message = FString::Printf(TEXT("TEAM N - %s"), *PassedPlayer->GetActorLocation().ToString());
         GEngine->AddOnScreenDebugMessage(6, 3, FColor::Red, Message);
@@ -170,37 +168,41 @@ FVector UTBBallComputeDataComponent::GetVecPlayerToBall()
 
 FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
 {
-    
-    FVector BallVelocity = Ball->GetVelocity();
+
+    FVector BallVelocity   = Ball->GetVelocity();
     FVector PlayerPosition = Player->GetActorLocation();
-    FVector Result         = PlayerPosition;
-    if (BallVelocity.Length() < 100) return Result;
-   
-    
+    if (BallVelocity.Length() < 100) return PlayerPosition;
+
     FVector PlayerRightUnitVec = Player->GetActorRightVector();
     FVector PlayerRightVec     = PlayerPosition + (PlayerRightUnitVec * 500.0f);
-    FVector PlayerLeftVec     = PlayerPosition + (-PlayerRightUnitVec * 500.0f);
+    FVector PlayerLeftVec      = PlayerPosition + (-PlayerRightUnitVec * 500.0f);
 
-    FVector BallPostion        = Ball->GetActorLocation();
-    FVector BallPosAddVel      = BallPostion + BallVelocity;
+    FVector BallPostion   = Ball->GetActorLocation();
+    FVector BallPosAddVel = BallPostion + BallVelocity;
 
     FVector RightIntersection = FVector::Zero();
-    FVector LeftIntersection = FVector::Zero();
-
-    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerRightVec, RightIntersection))
-    {
-        FString Message = FString::Printf(TEXT("Right Intersection - %s"), *RightIntersection.ToString());
-        GEngine->AddOnScreenDebugMessage(10, 1, FColor::Cyan, Message);
-    }
-    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerLeftVec, LeftIntersection))
-    {
-        FString Message = FString::Printf(TEXT("Left Intersection - %s"), *LeftIntersection.ToString());
-        GEngine->AddOnScreenDebugMessage(11, 1, FColor::Cyan, Message);
-    }
+    FVector LeftIntersection  = FVector::Zero();
 
     UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallPostion, BallPosAddVel, 1.0f, FColor::Red, 0.0f, 3.0f);
     UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerRightVec, 1.0f, FColor::Blue, 0.0f, 3.0f);
     UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerLeftVec, 1.0f, FColor::Magenta, 0.0f, 3.0f);
 
-    return Result;
+    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerRightVec, RightIntersection))
+    {
+        FString Message = FString::Printf(TEXT("Right Intersection - %s"), *RightIntersection.ToString());
+        GEngine->AddOnScreenDebugMessage(10, 1, FColor::Cyan, Message);
+        FVector Offset = RightIntersection - PlayerPosition;
+        FVector Result = PlayerPosition + (Offset * 1.5);
+        return Result;
+    }
+    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerLeftVec, LeftIntersection))
+    {
+        FString Message = FString::Printf(TEXT("Left Intersection - %s"), *LeftIntersection.ToString());
+        GEngine->AddOnScreenDebugMessage(11, 1, FColor::Cyan, Message);
+        FVector Offset = LeftIntersection - PlayerPosition;
+        FVector Result = PlayerPosition + (Offset * 1.5);
+        return Result;
+    }
+
+    return PlayerPosition;
 }
