@@ -13,8 +13,9 @@ EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Cont
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-       FVector OffsetMove =  Player->GetBallComputeDataComponent()->FindCorrectionPlayerPositionForTakeBall();
-        Player->MoveToTarget(OffsetMove);
+        // need rotate to ball
+        //FVector OffsetMove =  Player->GetBallComputeDataComponent()->FindCorrectionPlayerPositionForTakeBall();
+       // Player->MoveToTarget(OffsetMove);
 
     }
 

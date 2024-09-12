@@ -13,7 +13,8 @@ enum class EPlayerState : uint8
     MoveToBallAndShooting UMETA(DisplayName = "Move To Ball And Shooting"),
     PassBall UMETA(DisplayName = "Pass Ball"),
     TakePassingBall UMETA(DisplayName = "Take Passing Ball"),
-    RandomRunning UMETA(DisplayName = "Random Running")
+    RandomRunning UMETA(DisplayName = "Random Running"),
+    Wait UMETA(DisplayName = "Wait")
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

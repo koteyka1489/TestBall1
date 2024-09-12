@@ -8,6 +8,7 @@
 #include "Cage/Cage.h"
 #include "Kismet\GameplayStatics.h"
 #include "Components\TBBrainComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
@@ -177,33 +178,29 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
    
     
     FVector PlayerRightUnitVec = Player->GetActorRightVector();
+    FVector PlayerRightVec     = PlayerPosition + (PlayerRightUnitVec * 500.0f);
+    FVector PlayerLeftVec     = PlayerPosition + (-PlayerRightUnitVec * 500.0f);
+
     FVector BallPostion        = Ball->GetActorLocation();
-    
     FVector BallPosAddVel      = BallPostion + BallVelocity;
 
-    FVector VectorOffset          = PlayerPosition - BallVelocity;
-    FVector VectorOffsetNormalize = VectorOffset.GetSafeNormal();
-    float DotProduct              = VectorOffsetNormalize.Dot(PlayerRightUnitVec);
-    if (DotProduct <= -0.5f)
+    FVector RightIntersection = FVector::Zero();
+    FVector LeftIntersection = FVector::Zero();
+
+    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerRightVec, RightIntersection))
     {
-        //Need Right Move
-        Result = PlayerPosition + (PlayerRightUnitVec * VectorOffset.Length());
+        FString Message = FString::Printf(TEXT("Right Intersection - %s"), *RightIntersection.ToString());
+        GEngine->AddOnScreenDebugMessage(10, 1, FColor::Cyan, Message);
     }
-    if (DotProduct >= 0.5f)
+    if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerLeftVec, LeftIntersection))
     {
-        // Need Left Move
-        Result = PlayerPosition + (PlayerRightUnitVec * -1.0f * VectorOffset.Length());
+        FString Message = FString::Printf(TEXT("Left Intersection - %s"), *LeftIntersection.ToString());
+        GEngine->AddOnScreenDebugMessage(11, 1, FColor::Cyan, Message);
     }
 
-
-    FString Message = FString::Printf(TEXT("Vector Offset - %s"), *VectorOffset.ToString());
-    GEngine->AddOnScreenDebugMessage(8, 10, FColor::Cyan, Message);
-
-    FString Message1 = FString::Printf(TEXT("Dot Product - %f"), DotProduct);
-    GEngine->AddOnScreenDebugMessage(9, 10, FColor::Cyan, Message1);
-
-    FString Message2 = FString::Printf(TEXT("Result - %s"), *Result.ToString());
-    GEngine->AddOnScreenDebugMessage(10, 10, FColor::Cyan, Message2);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallPostion, BallPosAddVel, 1.0f, FColor::Red, 0.0f, 3.0f);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerRightVec, 1.0f, FColor::Blue, 0.0f, 3.0f);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), PlayerPosition, PlayerLeftVec, 1.0f, FColor::Magenta, 0.0f, 3.0f);
 
     return Result;
 }
