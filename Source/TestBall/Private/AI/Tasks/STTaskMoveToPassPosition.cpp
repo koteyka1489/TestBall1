@@ -10,19 +10,36 @@ USTTaskMoveToPassPosition::USTTaskMoveToPassPosition(const FObjectInitializer& O
 {
 }
 
-EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
+EStateTreeRunStatus USTTaskMoveToPassPosition::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
 
-        Player->MoveToTarget(Target);
-
-        if (Player->IsCanMakePass())
+        if (Player->GetBallComputeDataComponent()->IsBallMovingAway())
         {
-            FinishTask();
+            FVector TargetToBall = Player->GetBallComputeDataComponent()->GetBallLocation();
+            Player->MoveToTarget(TargetToBall);
         }
+        else
+        {
+            FVector TargetToPass = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
+            Player->MoveToTarget(TargetToPass);
+        }
+        
+    }
+
+    Super::EnterState(Context, Transition);
+    return RunStatus;
+}
+
+EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
+{
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+
+    if (Player->IsCanMakePass())
+    {
+        FinishTask();
     }
 
     Super::Tick(Context, DeltaTime);

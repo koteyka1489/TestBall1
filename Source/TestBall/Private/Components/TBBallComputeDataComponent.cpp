@@ -211,3 +211,18 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
 
     return PlayerPosition;
 }
+
+bool UTBBallComputeDataComponent::IsBallMovingAway()
+{
+    if (!Ball) return false;
+
+    FVector BallVelocity = Ball->GetVelocity();
+    FVector BallVelocityNormalize = BallVelocity.GetSafeNormal();
+    float DotPlayerForwardAndBallVel = BallVelocityNormalize.Dot(Player->GetActorForwardVector());
+    if (DotPlayerForwardAndBallVel > 0.1f && BallVelocity.Length() > BallVelocityMaxLenght)
+    {
+        GEngine->AddOnScreenDebugMessage(12, 1, FColor::Cyan, TEXT("IsBallMovingAway TRUE"));
+        return true;
+    }
+    return false;
+}

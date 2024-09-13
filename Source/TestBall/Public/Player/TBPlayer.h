@@ -97,6 +97,7 @@ protected:
 private:
     void CheckMoveToBall();
     void MoveToBallAndShoot();
+    void MoveToTargetTick();
 
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
@@ -109,6 +110,9 @@ private:
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
 
-    FVector MoveToTargetNoRotVec = FVector::Zero();
-    bool bMoveToTargetNoRot      = false;
+    FVector MoveToTargetNoRotVec    = FVector::Zero();
+    FVector MoveToTargetPositionVec = FVector::Zero();
+    bool bMoveToTargetNoRot         = false;
+    bool bMoveToTarget              = false;
+    float MoveToTargetGoalLenght    = 0.0f;
 };

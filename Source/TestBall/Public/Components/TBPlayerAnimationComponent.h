@@ -51,7 +51,7 @@ protected:
     float ShootTheBallDistance = 135.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    float PassBallDistance = 80.0f;
+    float PassBallDistance = 50.0f;
 
 private:
     void PlayAnimMontage(UAnimMontage* Montage);

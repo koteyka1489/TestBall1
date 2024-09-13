@@ -81,6 +81,8 @@ public:
 
     FVector FindCorrectionPlayerPositionForTakeBall();
 
+    bool IsBallMovingAway();
+
 protected:
     virtual void BeginPlay() override;
 
@@ -95,6 +97,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Passing")
     FPassingRandoms PassingRandoms;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
+    float BallVelocityMaxLenght = 50.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TakeBall")
     float CoeffOffsetTakeBall = 1.2f;
