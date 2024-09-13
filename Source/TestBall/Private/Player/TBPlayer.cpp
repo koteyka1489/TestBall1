@@ -52,12 +52,20 @@ void ATBPlayer::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     UpdateTextComponent();
 
-    if (IsMovingToBall) MoveToBall();
+    if (IsMovingToBall)
+    {
+        MoveToBall();
+    }
 
-    if (bMoveToTargetNoRot) MoveToTargetNoRotationTick();
+    if (bMoveToTargetNoRot)
+    {
+        MoveToTargetNoRotationTick();
+    }
 
-    if (bMoveToTarget) MoveToTargetTick();
-
+    if (bMoveToTarget)
+    {
+        MoveToTargetTick();
+    }
 }
 
 bool ATBPlayer::IsCanMakePass()
@@ -125,12 +133,12 @@ void ATBPlayer::MoveToBallAndShoot()
     PlayerAnimationComponent->ShootBall();
 }
 
-void ATBPlayer::MoveToTargetTick() 
+void ATBPlayer::MoveToTargetTick()
 {
-    FVector Direction = MoveToTargetPositionVec - GetActorLocation();
+    FVector Direction          = MoveToTargetPositionVec - GetActorLocation();
     FVector DirectionNormalize = Direction.GetSafeNormal();
     AddMovementInput(DirectionNormalize, 1.0f);
-   
+
     FString Message = FString::Printf(TEXT("DIRECTION LENGTH - %f"), Direction.Length());
     GEngine->AddOnScreenDebugMessage(14, 1, FColor::Cyan, Message);
 
@@ -182,6 +190,7 @@ void ATBPlayer::MoveToTargetNoRotation(FVector Location)
 {
     MoveToTargetNoRotVec = Location;
     bMoveToTargetNoRot   = true;
+    
 }
 
 void ATBPlayer::OnBallPassed()
@@ -251,7 +260,13 @@ void ATBPlayer::UpdateTextComponent()
 
 void ATBPlayer::MoveToTargetNoRotationTick()
 {
-    float Dot = MoveToTargetNoRotVec.Dot(GetActorRightVector());
+    FVector MoveToTargetNoRotVecNormalize = (MoveToTargetNoRotVec - GetActorLocation()).GetSafeNormal();
+    float Dot = MoveToTargetNoRotVecNormalize.Dot(GetActorRightVector());
+
+    FString Message = FString::Printf(TEXT("DOT %f"), Dot);
+    GEngine->AddOnScreenDebugMessage(19, 3, FColor::Cyan, Message);
+    
+
     if (Dot >= 0.1f)
     {
         AddMovementInput(GetActorRightVector(), 1.0f);
@@ -261,9 +276,11 @@ void ATBPlayer::MoveToTargetNoRotationTick()
         AddMovementInput(GetActorRightVector(), -1.0f);
     }
 
-    if (MoveToTargetNoRotVec.Length() <= 1.0f)
+    FString Message1 = FString::Printf(TEXT("LENGTH %f"), (MoveToTargetNoRotVec - GetActorLocation()).Length());
+    GEngine->AddOnScreenDebugMessage(20, 3, FColor::Cyan, Message1);
+
+    if ((MoveToTargetNoRotVec - GetActorLocation()).Length() <= 10.0f)
     {
-        GetCharacterMovement()->StopMovementImmediately();
         MoveToTargetNoRotVec = FVector::Zero();
         bMoveToTargetNoRot   = false;
     }

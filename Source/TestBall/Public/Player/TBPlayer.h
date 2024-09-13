@@ -115,4 +115,5 @@ private:
     bool bMoveToTargetNoRot         = false;
     bool bMoveToTarget              = false;
     float MoveToTargetGoalLenght    = 0.0f;
+   
 };
