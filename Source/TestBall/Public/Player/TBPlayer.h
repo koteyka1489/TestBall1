@@ -100,6 +100,7 @@ protected:
 private:
     void MessageToPassedPlayer();
     void MoveToTargetLeftOrRightStrafeTick();
+    float GetTimeMoveToLocation(FVector Location);
 
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;

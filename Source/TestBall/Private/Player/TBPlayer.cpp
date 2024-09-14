@@ -128,6 +128,9 @@ void ATBPlayer::MoveToTargetLeftOrRightStrafe(FVector Location)
 
 void ATBPlayer::MoveToLocation(FVector TargetLocation)
 {
+    float TimeToLocation = GetTimeMoveToLocation(TargetLocation);
+    GEngine->AddOnScreenDebugMessage(3, 5.0f, FColor::Green, FString::Printf(TEXT("TIME to Location - %f"), TimeToLocation));
+
     bMoveToLocationComplete       = false;
     ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
     if (AIController)
@@ -177,4 +180,12 @@ void ATBPlayer::MoveToTargetLeftOrRightStrafeTick()
     {
         AddMovementInput(GetActorRightVector(), -1.0f);
     }
+}
+
+float ATBPlayer::GetTimeMoveToLocation(FVector Location)
+{
+    FVector VecToTarget = Location - GetActorLocation();
+    float LengthVecToTarget = VecToTarget.Length();
+    float PlayerSpeed       = GetMovementComponent()->GetMaxSpeed();
+    return LengthVecToTarget / PlayerSpeed;
 }
