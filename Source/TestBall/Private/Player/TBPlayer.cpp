@@ -81,7 +81,6 @@ bool ATBPlayer::IsCanMakeShoot()
 bool ATBPlayer::IsCanTakeBall()
 {
     float DistanceToBall = BallComputeDataComponent->GetDistanceToBall();
-    UE_LOG(LogTemp, Display, TEXT("DistanceToBall %f"), DistanceToBall);
 
     return DistanceToBall < MaxDistanceToStartTakeBall && DistanceToBall > MinDistanceToStartTakeBall &&
            !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
@@ -190,7 +189,6 @@ void ATBPlayer::MoveToTargetNoRotation(FVector Location)
 {
     MoveToTargetNoRotVec = Location;
     bMoveToTargetNoRot   = true;
-    
 }
 
 void ATBPlayer::OnBallPassed()
@@ -260,12 +258,15 @@ void ATBPlayer::UpdateTextComponent()
 
 void ATBPlayer::MoveToTargetNoRotationTick()
 {
-    FVector MoveToTargetNoRotVecNormalize = (MoveToTargetNoRotVec - GetActorLocation()).GetSafeNormal();
-    float Dot = MoveToTargetNoRotVecNormalize.Dot(GetActorRightVector());
+    if ((MoveToTargetNoRotVec - GetActorLocation()).Length() <= 10.0f)
+    {
+        MoveToTargetNoRotVec = FVector::Zero();
+        bMoveToTargetNoRot   = false;
+        GetCharacterMovement()->StopMovementImmediately();
+    }
 
-    FString Message = FString::Printf(TEXT("DOT %f"), Dot);
-    GEngine->AddOnScreenDebugMessage(19, 3, FColor::Cyan, Message);
-    
+    FVector MoveToTargetNoRotVecNormalize = (MoveToTargetNoRotVec - GetActorLocation()).GetSafeNormal();
+    float Dot                             = MoveToTargetNoRotVecNormalize.Dot(GetActorRightVector());
 
     if (Dot >= 0.1f)
     {
@@ -275,15 +276,4 @@ void ATBPlayer::MoveToTargetNoRotationTick()
     {
         AddMovementInput(GetActorRightVector(), -1.0f);
     }
-
-    FString Message1 = FString::Printf(TEXT("LENGTH %f"), (MoveToTargetNoRotVec - GetActorLocation()).Length());
-    GEngine->AddOnScreenDebugMessage(20, 3, FColor::Cyan, Message1);
-
-    if ((MoveToTargetNoRotVec - GetActorLocation()).Length() <= 10.0f)
-    {
-        MoveToTargetNoRotVec = FVector::Zero();
-        bMoveToTargetNoRot   = false;
-    }
-
-    // AddMovementInput(MoveToTargetNoRotVec.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
 }

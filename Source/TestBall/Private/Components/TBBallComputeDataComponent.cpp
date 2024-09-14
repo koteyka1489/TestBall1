@@ -197,7 +197,7 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
         FString Message = FString::Printf(TEXT("Right Intersection - %s"), *RightIntersection.ToString());
         GEngine->AddOnScreenDebugMessage(10, 1, FColor::Cyan, Message);
         FVector Offset = RightIntersection - PlayerPosition;
-        FVector Result = PlayerPosition + (Offset * CoeffOffsetTakeBall);
+        FVector Result = PlayerPosition + Offset;
         return Result;
     }
     if (FMath::SegmentIntersection2D(BallPostion, BallPosAddVel, PlayerPosition, PlayerLeftVec, LeftIntersection))
@@ -205,7 +205,7 @@ FVector UTBBallComputeDataComponent::FindCorrectionPlayerPositionForTakeBall()
         FString Message = FString::Printf(TEXT("Left Intersection - %s"), *LeftIntersection.ToString());
         GEngine->AddOnScreenDebugMessage(11, 1, FColor::Cyan, Message);
         FVector Offset = LeftIntersection - PlayerPosition;
-        FVector Result = PlayerPosition + (Offset * CoeffOffsetTakeBall);
+        FVector Result = PlayerPosition + Offset;
         return Result;
     }
 
@@ -216,8 +216,8 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
 {
     if (!Ball) return false;
 
-    FVector BallVelocity = Ball->GetVelocity();
-    FVector BallVelocityNormalize = BallVelocity.GetSafeNormal();
+    FVector BallVelocity             = Ball->GetVelocity();
+    FVector BallVelocityNormalize    = BallVelocity.GetSafeNormal();
     float DotPlayerForwardAndBallVel = BallVelocityNormalize.Dot(Player->GetActorForwardVector());
     if (DotPlayerForwardAndBallVel > 0.1f && BallVelocity.Length() > BallVelocityMaxLenght)
     {
