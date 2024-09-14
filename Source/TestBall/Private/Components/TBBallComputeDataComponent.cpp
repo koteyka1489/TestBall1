@@ -12,7 +12,7 @@
 
 UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
-    PrimaryComponentTick.bCanEverTick = false;
+    PrimaryComponentTick.bCanEverTick = true;
     Player                            = Cast<ATBPlayer>(GetOwner());
     Ball                              = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
 }
@@ -22,11 +22,26 @@ void UTBBallComputeDataComponent::BeginPlay()
     Super::BeginPlay();
 }
 
+void UTBBallComputeDataComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) 
+{
+    CalcBallSpeed(DeltaTime); 
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
 FVector UTBBallComputeDataComponent::GetBallLocation()
 {
     if (Ball)
     {
         return Ball->GetActorLocation();
+    }
+    return FVector::Zero();
+}
+
+FVector UTBBallComputeDataComponent::GetBallVelocity()
+{
+    if (Ball)
+    {
+        return Ball->GetVelocity();
     }
     return FVector::Zero();
 }
@@ -159,6 +174,11 @@ void UTBBallComputeDataComponent::CheckBallLocation()
     }
 }
 
+void UTBBallComputeDataComponent::CalcBallSpeed(float DeltaTime)
+{
+
+}
+
 FVector UTBBallComputeDataComponent::GetVecPlayerToBall()
 {
     if (Player)
@@ -213,7 +233,7 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
 {
     if (!Ball) return false;
 
-    FVector BallVelocity             = Ball->GetVelocity();
+    FVector BallVelocity             = GetBallVelocity();
     FVector BallVelocityNormalize    = BallVelocity.GetSafeNormal();
     float DotPlayerForwardAndBallVel = BallVelocityNormalize.Dot(Player->GetActorForwardVector());
     if (DotPlayerForwardAndBallVel > 0.1f && BallVelocity.Length() > BallVelocityMaxLenght)
@@ -222,4 +242,23 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
         return true;
     }
     return false;
+}
+
+FVector UTBBallComputeDataComponent::GetBallLocationInTime(float Time)
+{
+    FVector BallLocation = GetBallLocation();
+    FVector BallVelocity = GetBallVelocity();
+    FVector VecBallToBallDest = (BallLocation + BallVelocity) - BallLocation;
+    float TimeToBallDest      = 0.0f;
+
+    if (BallVelocity.Length() != 0.0f)
+    {
+        TimeToBallDest = VecBallToBallDest.Length() / BallVelocity.Length();
+    }
+    
+    FString Message4 = FString::Printf(TEXT("Ball SPEED - %f"), TimeToBallDest);
+    GEngine->AddOnScreenDebugMessage(33, 1, FColor::Green, Message4);
+
+
+    return FVector::Zero();
 }

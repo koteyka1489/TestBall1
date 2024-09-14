@@ -66,6 +66,9 @@ public:
     FVector GetBallLocation();
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
+    FVector GetBallVelocity();
+
+    UFUNCTION(BlueprintCallable, Category = "Ball")
     float GetDistanceToBall();
 
     UFUNCTION(BlueprintCallable, Category = "Ball")
@@ -83,8 +86,11 @@ public:
 
     bool IsBallMovingAway();
 
+    FVector GetBallLocationInTime(float Time);
+
 protected:
     virtual void BeginPlay() override;
+    virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
     ABall1* Ball = nullptr;
@@ -109,6 +115,7 @@ private:
     void CheckBallLocationAndDirection();
     void CheckPlayerToBallDirection();
     void CheckBallLocation();
+    void CalcBallSpeed(float DeltaTime);
 
     bool BallIsForward       = false;
     bool BallIsCloseLocation = false;
@@ -116,4 +123,9 @@ private:
     TObjectPtr<ATBPlayer> Player = nullptr;
 
     FVector VectorToBall = FVector::ZeroVector;
+
+    FVector PrevBallLocation = FVector::Zero();
+    
+    float BallSpeed              = 0.0f;
+
 };

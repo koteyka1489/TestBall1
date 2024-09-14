@@ -131,6 +131,9 @@ void ATBPlayer::MoveToLocation(FVector TargetLocation)
     float TimeToLocation = GetTimeMoveToLocation(TargetLocation);
     GEngine->AddOnScreenDebugMessage(3, 5.0f, FColor::Green, FString::Printf(TEXT("TIME to Location - %f"), TimeToLocation));
 
+    BallComputeDataComponent->GetBallLocationInTime(TimeToLocation);
+
+
     bMoveToLocationComplete       = false;
     ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
     if (AIController)
