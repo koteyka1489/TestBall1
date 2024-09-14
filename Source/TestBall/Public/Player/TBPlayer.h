@@ -20,7 +20,7 @@ class ATBAIController;
 class UTBPlayerStateComponent;
 enum class EPlayerState : uint8;
 class UTBBrainComponent;
-class UTextRenderComponent;
+class UTBTextRenderComponent;
 
 namespace EPathFollowingResult
 {
@@ -80,7 +80,7 @@ protected:
     UTBBrainComponent* BrainComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* TextRenderComponent;
+    UTBTextRenderComponent* TextRenderComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
@@ -99,8 +99,6 @@ protected:
 
 private:
     void MessageToPassedPlayer();
-    void InitTextRenderComponent();
-    void UpdateTextComponent();
     void MoveToTargetLeftOrRightStrafeTick();
 
     bool bSetRotationPlayerOnBall = false;

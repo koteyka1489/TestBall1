@@ -17,6 +17,7 @@
 #include "Components\TBBrainComponent.h"
 #include "Ball\Ball1.h"
 #include "Components\TextRenderComponent.h"
+#include "Components\TBTextRenderComponent.h"
 
 class APlayerController;
 class UTBStaticMeshComponent;
@@ -31,13 +32,13 @@ ATBPlayer::ATBPlayer()
     BallComputeDataComponent = CreateDefaultSubobject<UTBBallComputeDataComponent>("BallComputeDataComponent");
     PlayerStateComponent     = CreateDefaultSubobject<UTBPlayerStateComponent>("PlayerStateComponent");
     BrainComponent           = CreateDefaultSubobject<UTBBrainComponent>("BrainComponent");
-    TextRenderComponent      = CreateDefaultSubobject<UTextRenderComponent>("UTextRenderComponent");
+    TextRenderComponent      = CreateDefaultSubobject<UTBTextRenderComponent>("UTextRenderComponent");
     TextRenderComponent->SetupAttachment(GetRootComponent());
 
     AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ATBAIController::StaticClass();
-    InitTextRenderComponent();
-    UpdateTextComponent();
+    
+    
 }
 
 void ATBPlayer::BeginPlay()
@@ -46,6 +47,7 @@ void ATBPlayer::BeginPlay()
     GetCharacterMovement()->bOrientRotationToMovement = false;
     bUseControllerRotationYaw                         = false;
 
+    TextRenderComponent->UpdateTextComponent(PlayerStateComponent->GetPlayerState());
     ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
     if (AIController)
     {
@@ -56,7 +58,7 @@ void ATBPlayer::BeginPlay()
 void ATBPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    UpdateTextComponent();
+    TextRenderComponent->UpdateTextComponent(PlayerStateComponent->GetPlayerState());
     if (bMoveToTargetLeftOrRightStrafe) MoveToTargetLeftOrRightStrafeTick();
 }
 
@@ -153,51 +155,7 @@ void ATBPlayer::MessageToPassedPlayer()
     PassedPlayer->GetPlayerStateComponent()->SetPlayerState(EPlayerState::TakePassingBall);
 }
 
-void ATBPlayer::InitTextRenderComponent()
-{
-    TextRenderComponent->SetTextRenderColor(FColor::Green);
-    TextRenderComponent->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
-    TextRenderComponent->SetWorldSize(50.0f);
-    TextRenderComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
-}
 
-void ATBPlayer::UpdateTextComponent()
-{
-    switch (PlayerStateComponent->GetPlayerState())
-    {
-        case EPlayerState::PassBall:
-        {
-            TextRenderComponent->SetText(FText::FromString("PASS BALL"));
-            break;
-        }
-        case EPlayerState::TakePassingBall:
-        {
-            TextRenderComponent->SetText(FText::FromString("TAKE PASSING BALL"));
-            break;
-        }
-        case EPlayerState::RandomRunning:
-        {
-            TextRenderComponent->SetText(FText::FromString("RANDOM RUNING"));
-            break;
-        }
-        case EPlayerState::MoveToBallAndControl:
-        {
-            TextRenderComponent->SetText(FText::FromString("Move To Ball And Control"));
-            break;
-        }
-        case EPlayerState::MoveToBallAndShooting:
-        {
-            TextRenderComponent->SetText(FText::FromString("Move To Ball And Shooting"));
-            break;
-        }
-        case EPlayerState::Wait:
-        {
-            TextRenderComponent->SetText(FText::FromString("WAIT"));
-            break;
-        }
-        default: break;
-    }
-}
 
 void ATBPlayer::MoveToTargetLeftOrRightStrafeTick()
 {
