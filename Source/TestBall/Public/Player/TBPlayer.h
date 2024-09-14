@@ -92,7 +92,7 @@ protected:
     float MinDistanceToStartTakeBall = 400.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float RotationSpeed = 5.0f;
+    float RotationSpeed = 10.0f;
 
     UFUNCTION()
     void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);

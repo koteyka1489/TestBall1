@@ -103,9 +103,6 @@ PassingData UTBBallComputeDataComponent::GetPassingData()
     {
         auto PassedPlayer = Player->GetBrainComponent()->GetPassedPlayer();
 
-        FString Message = FString::Printf(TEXT("TEAM N - %s"), *PassedPlayer->GetActorLocation().ToString());
-        GEngine->AddOnScreenDebugMessage(6, 3, FColor::Red, Message);
-
         float XRandPass = FMath::FRandRange(-PassingRandoms.x, PassingRandoms.x);
         float YRandPass = FMath::FRandRange(-PassingRandoms.y, PassingRandoms.y);
         FVector RandPassOffset(XRandPass, YRandPass, 0.0f);

@@ -12,13 +12,11 @@ UTBBrainComponent::UTBBrainComponent()
 void UTBBrainComponent::BeginPlay()
 {
     Super::BeginPlay();
-    PassedPlayer = Team[0];
+    SelectPlayerToPass();
 }
 
 void UTBBrainComponent::SelectPlayerToPass()
 {
-    FString Message = FString::Printf(TEXT("TEAM N - %i"), Team.Num());
-    GEngine->AddOnScreenDebugMessage(5, 3, FColor::Red, Message);
 
     if (Team.Num() == 0) return;
 
@@ -26,9 +24,9 @@ void UTBBrainComponent::SelectPlayerToPass()
     {
         PassedPlayer = Team[0];
     }
-    //else
-    //{
-    //    int32 RandIndex = FMath::RandRange(0, Team.Num() - 1);
-    //    PassedPlayer    = Team[RandIndex];
-    //}
+    else
+    {
+        int32 RandIndex = FMath::RandRange(0, Team.Num() - 1);
+        PassedPlayer    = Team[RandIndex];
+    }
 }

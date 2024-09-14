@@ -29,6 +29,7 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
+
         if (Player->IsMoveToLocationComplete())
         {
             FinishTask();
