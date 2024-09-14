@@ -52,25 +52,18 @@ void ATBPlayer::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     UpdateTextComponent();
 
-    if (IsMovingToBall)
-    {
-        MoveToBall();
-    }
+    if (bMoveToBallForShootingPos) MoveToBallForShootiongPosTick();
 
-    if (bMoveToTargetNoRot)
-    {
-        MoveToTargetNoRotationTick();
-    }
+    if (bMoveToTargetLeftOrRightStrafe) MoveToTargetLeftOrRightStrafeTick();
 
-    if (bMoveToTarget)
-    {
-        MoveToTargetTick();
-    }
+    if (bMoveToTarget) MoveToTargetTick();
+
+    if (bMoveToBall) MoveToBallTick();
 }
 
 bool ATBPlayer::IsCanMakePass()
 {
-    return !bMoveToTarget;
+    return bMoveToPassEnd;
 }
 
 bool ATBPlayer::IsCanMakeShoot()
@@ -101,7 +94,7 @@ ABall1* ATBPlayer::GetBallPtr()
     return BallComputeDataComponent->GetBallPtr();
 }
 
-void ATBPlayer::MoveToBall()
+void ATBPlayer::MoveToBallForShootiongPosTick()
 {
     FVector VectorToBall = BallComputeDataComponent->GetVecPlayerToBall();
     if (VectorToBall.Length() > PlayerAnimationComponent->GetShootTheBallDistance())
@@ -110,25 +103,25 @@ void ATBPlayer::MoveToBall()
     }
     else
     {
-        IsMovingToBall     = false;
-        PlayerReadyToShoot = true;
+        bMoveToBallForShootingPos = false;
+        PlayerReadyToShoot        = true;
         GetCharacterMovement()->StopMovementImmediately();
     }
 }
 
-void ATBPlayer::CheckMoveToBall()
+void ATBPlayer::CheckMoveToBallForShootingPos()
 {
 
     float VecLenght = BallComputeDataComponent->GetVecPlayerToBall().Length();
     if (VecLenght > PlayerAnimationComponent->GetShootTheBallDistance())
     {
-        IsMovingToBall = true;
+        bMoveToBallForShootingPos = true;
     }
 }
 
 void ATBPlayer::MoveToBallAndShoot()
 {
-    CheckMoveToBall();
+    CheckMoveToBallForShootingPos();
     PlayerAnimationComponent->ShootBall();
 }
 
@@ -136,23 +129,38 @@ void ATBPlayer::MoveToTargetTick()
 {
     FVector Direction          = MoveToTargetPositionVec - GetActorLocation();
     FVector DirectionNormalize = Direction.GetSafeNormal();
+    
     AddMovementInput(DirectionNormalize, 1.0f);
-
-    FString Message = FString::Printf(TEXT("DIRECTION LENGTH - %f"), Direction.Length());
-    GEngine->AddOnScreenDebugMessage(14, 1, FColor::Cyan, Message);
-
-    FString Message1 = FString::Printf(TEXT("Target LENGTH - %f"), MoveToTargetGoalLenght);
-    GEngine->AddOnScreenDebugMessage(15, 1, FColor::Cyan, Message1);
 
     if (Direction.Length() < MoveToTargetGoalLenght + 35.0f)
     {
         GetCharacterMovement()->StopMovementImmediately();
         MoveToTargetPositionVec = FVector::Zero();
         bMoveToTarget           = false;
+        bMoveToPassEnd          = true;
+    }
+}
+
+void ATBPlayer::MoveToBallTick()
+{
+    FString Message = FString::Printf(TEXT("BAll Postion - %s"), *BallComputeDataComponent->GetBallLocation().ToString());
+    GEngine->AddOnScreenDebugMessage(8, 1.0f, FColor::Black, Message);
+
+    FVector DirectionToBall          = BallComputeDataComponent->GetBallLocation() - GetActorLocation();
+    FVector DirectionToBallNormalize = DirectionToBall.GetSafeNormal();
+
+    AAIController* AIController = Cast<AAIController>(GetController());
+    if (AIController)
+    {
+        AIController->MoveToLocation(DirectionToBall);
     }
 
-    GEngine->AddOnScreenDebugMessage(
-        13, 1, FColor::Cyan, FString::Printf(TEXT("bMoveToTarget - %s"), bMoveToTarget ? TEXT("True") : TEXT("False")));
+    if (DirectionToBall.Length() < 50.0f)
+    {
+        GetCharacterMovement()->StopMovementImmediately();
+        bMoveToBall    = false;
+        bMoveToPassEnd = true;
+    }
 }
 
 void ATBPlayer::SetRotationPlayerOnBall()
@@ -176,6 +184,7 @@ void ATBPlayer::MoveToTarget(FVector Location)
 {
     MoveToTargetPositionVec = Location;
     bMoveToTarget           = true;
+    bMoveToPassEnd          = false;
     MoveToTargetGoalLenght  = (BallComputeDataComponent->GetBallLocation() - Location).Length();
 }
 
@@ -185,10 +194,10 @@ void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
     SetActorRotation(SmoothRotation);
 }
 
-void ATBPlayer::MoveToTargetNoRotation(FVector Location)
+void ATBPlayer::MoveToTargetLeftOrRightStrafe(FVector Location)
 {
-    MoveToTargetNoRotVec = Location;
-    bMoveToTargetNoRot   = true;
+    MoveToTargetNoRotVec           = Location;
+    bMoveToTargetLeftOrRightStrafe = true;
 }
 
 void ATBPlayer::OnBallPassed()
@@ -202,6 +211,17 @@ void ATBPlayer::OnBallTaked()
 {
     SetPlayerHaveBall(true);
     this->PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
+}
+
+void ATBPlayer::MoveToBallForShootiongPos()
+{
+    bMoveToBallForShootingPos = true;
+}
+
+void ATBPlayer::MoveToBall()
+{
+    bMoveToBall    = true;
+    bMoveToPassEnd = false;
 }
 
 void ATBPlayer::MessageToPassedPlayer()
@@ -256,12 +276,12 @@ void ATBPlayer::UpdateTextComponent()
     }
 }
 
-void ATBPlayer::MoveToTargetNoRotationTick()
+void ATBPlayer::MoveToTargetLeftOrRightStrafeTick()
 {
     if ((MoveToTargetNoRotVec - GetActorLocation()).Length() <= 10.0f)
     {
-        MoveToTargetNoRotVec = FVector::Zero();
-        bMoveToTargetNoRot   = false;
+        MoveToTargetNoRotVec           = FVector::Zero();
+        bMoveToTargetLeftOrRightStrafe = false;
         GetCharacterMovement()->StopMovementImmediately();
     }
 

@@ -14,7 +14,7 @@ EStateTreeRunStatus USTTaskTakeBall::EnterState(FStateTreeExecutionContext& Cont
     if (Player)
     {
         FVector OffsetMove = Player->GetBallComputeDataComponent()->FindCorrectionPlayerPositionForTakeBall();
-        Player->MoveToTargetNoRotation(OffsetMove);
+        Player->MoveToTargetLeftOrRightStrafe(OffsetMove);
     }
 
     Super::EnterState(Context, Transition);

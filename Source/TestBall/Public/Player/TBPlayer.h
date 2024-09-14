@@ -53,6 +53,7 @@ public:
     bool IsMoveToBallComplete();
     void OnBallPassed();
     void OnBallTaked();
+    void MoveToBallForShootiongPos();
     void MoveToBall();
 
     void SetRotationPlayerOnBall();
@@ -62,7 +63,7 @@ public:
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
-    void MoveToTargetNoRotation(FVector Location);
+    void MoveToTargetLeftOrRightStrafe(FVector Location);
 
 protected:
     virtual void BeginPlay() override;
@@ -95,25 +96,28 @@ protected:
     float RotationSpeed = 5.0f;
 
 private:
-    void CheckMoveToBall();
+    void CheckMoveToBallForShootingPos();
     void MoveToBallAndShoot();
     void MoveToTargetTick();
+    void MoveToBallTick();
 
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
     void UpdateTextComponent();
-    void MoveToTargetNoRotationTick();
+    void MoveToTargetLeftOrRightStrafeTick();
+    void MoveToBallForShootiongPosTick();
 
-    bool IsMovingToBall     = false;
-    bool PlayerReadyToShoot = false;
+    bool bMoveToBallForShootingPos = false;
+    bool PlayerReadyToShoot        = false;
 
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
 
-    FVector MoveToTargetNoRotVec    = FVector::Zero();
-    FVector MoveToTargetPositionVec = FVector::Zero();
-    bool bMoveToTargetNoRot         = false;
-    bool bMoveToTarget              = false;
-    float MoveToTargetGoalLenght    = 0.0f;
-   
+    FVector MoveToTargetNoRotVec        = FVector::Zero();
+    FVector MoveToTargetPositionVec     = FVector::Zero();
+    bool bMoveToTargetLeftOrRightStrafe = false;
+    bool bMoveToTarget                  = false;
+    bool bMoveToBall                     = false;
+    bool bMoveToPassEnd                 = false;
+    float MoveToTargetGoalLenght        = 0.0f;
 };
