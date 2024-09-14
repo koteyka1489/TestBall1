@@ -22,7 +22,10 @@ enum class EPlayerState : uint8;
 class UTBBrainComponent;
 class UTextRenderComponent;
 
-namespace EPathFollowingResult{enum Type : int;}
+namespace EPathFollowingResult
+{
+enum Type : int;
+}
 
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
@@ -43,16 +46,13 @@ public:
     bool IsPlayerHaveBall() const { return PlayerHaveBall; }
     void SetPlayerHaveBall(bool arg) { PlayerHaveBall = arg; }
 
-    bool IsReadyToShoot() const { return PlayerReadyToShoot; }
-    void SetReadyToShoot(bool arg) { PlayerReadyToShoot = arg; }
-
     float GetMaxDistanceToMoveTheBall() const { return MaxDistanceToMoveTheBall; }
 
-    bool IsCanMakePass();
-    bool IsCanMakeShoot();
+    bool IsMoveToLocationComplete();
+ 
     bool IsCanTakeBall();
     bool IsTakeBallComplete();
-    bool IsMoveToBallComplete();
+
     void OnBallPassed();
     void OnBallTaked();
 
@@ -60,8 +60,6 @@ public:
     void MoveToTargetLeftOrRightStrafe(FVector Location);
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
-
-   
 
     UFUNCTION(BlueprintCallable)
     void MoveToLocation(FVector TargetLocation);
@@ -84,7 +82,6 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* TextRenderComponent;
 
-
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
 
@@ -101,17 +98,10 @@ protected:
     void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
 
 private:
-    void CheckMoveToBallForShootingPos();
-    void MoveToBallAndShoot();
-    
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
     void UpdateTextComponent();
     void MoveToTargetLeftOrRightStrafeTick();
-    void MoveToBallForShootiongPosTick();
-
-    bool bMoveToBallForShootingPos = false;
-    bool PlayerReadyToShoot        = false;
 
     bool bSetRotationPlayerOnBall = false;
     bool PlayerHaveBall           = false;
@@ -119,7 +109,4 @@ private:
     FVector MoveToTargetNoRotVec        = FVector::Zero();
     bool bMoveToTargetLeftOrRightStrafe = false;
     bool bMoveToLocationComplete        = false;
-
-
-    float MoveToTargetGoalLenght        = 0.0f;
 };

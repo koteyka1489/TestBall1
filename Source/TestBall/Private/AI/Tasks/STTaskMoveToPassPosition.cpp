@@ -35,7 +35,7 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& 
 {
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
 
-    if (Player->IsCanMakePass())
+    if (Player->IsMoveToLocationComplete())
     {
         FinishTask();
     }

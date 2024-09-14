@@ -10,15 +10,26 @@ USTTaskMoveToShootingPosition::USTTaskMoveToShootingPosition(const FObjectInitia
 {
 }
 
-EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
+EStateTreeRunStatus USTTaskMoveToShootingPosition::EnterState(
+    FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition)
 {
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
         FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
         Player->MoveToLocation(Target);
+    }
 
-        if (Player->IsCanMakeShoot())
+    Super::EnterState(Context, Transition);
+    return RunStatus;
+}
+
+EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
+{
+    const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
+    if (Player)
+    {
+        if (Player->IsMoveToLocationComplete())
         {
             FinishTask();
         }

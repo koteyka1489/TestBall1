@@ -38,7 +38,6 @@ ATBPlayer::ATBPlayer()
     AIControllerClass = ATBAIController::StaticClass();
     InitTextRenderComponent();
     UpdateTextComponent();
-    
 }
 
 void ATBPlayer::BeginPlay()
@@ -58,22 +57,15 @@ void ATBPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     UpdateTextComponent();
-
-    if (bMoveToBallForShootingPos) MoveToBallForShootiongPosTick();
-
     if (bMoveToTargetLeftOrRightStrafe) MoveToTargetLeftOrRightStrafeTick();
-
 }
 
-bool ATBPlayer::IsCanMakePass()
+
+bool ATBPlayer::IsMoveToLocationComplete()
 {
     return bMoveToLocationComplete;
 }
 
-bool ATBPlayer::IsCanMakeShoot()
-{
-    return BallComputeDataComponent->GetDistanceToBall() < (PlayerAnimationComponent->GetShootTheBallDistance() + 50.0f);
-}
 
 bool ATBPlayer::IsCanTakeBall()
 {
@@ -88,51 +80,19 @@ bool ATBPlayer::IsTakeBallComplete()
     return PlayerAnimationComponent->IsTakeBallAnimationExecuted() && IsPlayerHaveBall();
 }
 
-bool ATBPlayer::IsMoveToBallComplete()
-{
-    return BallComputeDataComponent->GetDistanceToBall() < 100.0;
-}
 
 ABall1* ATBPlayer::GetBallPtr()
 {
     return BallComputeDataComponent->GetBallPtr();
 }
 
-void ATBPlayer::MoveToBallForShootiongPosTick()
-{
-    FVector VectorToBall = BallComputeDataComponent->GetVecPlayerToBall();
-    if (VectorToBall.Length() > PlayerAnimationComponent->GetShootTheBallDistance())
-    {
-        AddMovementInput(VectorToBall.GetSafeNormal(), GetCharacterMovement()->GetMaxSpeed());
-    }
-    else
-    {
-        bMoveToBallForShootingPos = false;
-        PlayerReadyToShoot        = true;
-        GetCharacterMovement()->StopMovementImmediately();
-    }
-}
 
-void ATBPlayer::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result) 
+
+void ATBPlayer::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
 {
     bMoveToLocationComplete = true;
 }
 
-void ATBPlayer::CheckMoveToBallForShootingPos()
-{
-
-    float VecLenght = BallComputeDataComponent->GetVecPlayerToBall().Length();
-    if (VecLenght > PlayerAnimationComponent->GetShootTheBallDistance())
-    {
-        bMoveToBallForShootingPos = true;
-    }
-}
-
-void ATBPlayer::MoveToBallAndShoot()
-{
-    CheckMoveToBallForShootingPos();
-    PlayerAnimationComponent->ShootBall();
-}
 
 
 void ATBPlayer::SetRotationPlayerOnBall()
@@ -152,8 +112,6 @@ void ATBPlayer::SetRotationPlayerOnBall()
     }
 }
 
-
-
 void ATBPlayer::RotateToTarget(FRotator Rotation, float DeltaTime)
 {
     FRotator SmoothRotation = FMath::RInterpTo(this->GetActorRotation(), Rotation, DeltaTime, RotationSpeed);
@@ -166,7 +124,7 @@ void ATBPlayer::MoveToTargetLeftOrRightStrafe(FVector Location)
     bMoveToTargetLeftOrRightStrafe = true;
 }
 
-void ATBPlayer::MoveToLocation(FVector TargetLocation) 
+void ATBPlayer::MoveToLocation(FVector TargetLocation)
 {
     bMoveToLocationComplete       = false;
     ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
@@ -188,7 +146,6 @@ void ATBPlayer::OnBallTaked()
     SetPlayerHaveBall(true);
     this->PlayerStateComponent->SetPlayerState(EPlayerState::PassBall);
 }
-
 
 void ATBPlayer::MessageToPassedPlayer()
 {

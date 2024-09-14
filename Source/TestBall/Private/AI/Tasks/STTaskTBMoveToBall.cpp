@@ -14,7 +14,7 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
         Player->MoveToLocation(Player->GetBallComputeDataComponent()->GetBallLocation());
     }
 
-    if (Player->IsMoveToBallComplete())
+    if (Player->IsMoveToLocationComplete())
     {
         FinishTask();
     }

@@ -62,7 +62,7 @@ void ABall1::HandleOnHit(
 
         if (PlayerAnimationComponent)
         {
-            PlayerReadyToShot = Player->IsReadyToShoot() && PlayerAnimationComponent->IsShootAnimationExecuted();
+            PlayerReadyToShot = PlayerAnimationComponent->IsShootAnimationExecuted();
             PlayerStopingBall = PlayerAnimationComponent->IsStopingBall();
             PlayerPassing     = PlayerAnimationComponent->IsPassAnimationExecuted();
             PlayerTakingBall  = PlayerAnimationComponent->IsTakeBallAnimationExecuted() || Player->GetPlayerStateComponent()->GetPlayerState() == EPlayerState::TakePassingBall;
