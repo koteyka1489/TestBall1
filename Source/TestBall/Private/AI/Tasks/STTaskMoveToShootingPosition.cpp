@@ -16,7 +16,7 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     if (Player)
     {
         FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
-        Player->MoveToTarget(Target);
+        Player->MoveToLocation(Target);
 
         if (Player->IsCanMakeShoot())
         {

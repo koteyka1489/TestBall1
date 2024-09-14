@@ -22,6 +22,8 @@ enum class EPlayerState : uint8;
 class UTBBrainComponent;
 class UTextRenderComponent;
 
+namespace EPathFollowingResult{enum Type : int;}
+
 UCLASS()
 class TESTBALL_API ATBPlayer : public ACharacter
 {
@@ -53,17 +55,16 @@ public:
     bool IsMoveToBallComplete();
     void OnBallPassed();
     void OnBallTaked();
-    void MoveToBallForShootiongPos();
-    void MoveToBall();
 
     void SetRotationPlayerOnBall();
-
-    UFUNCTION(BlueprintCallable)
-    void MoveToTarget(FVector Location);
+    void MoveToTargetLeftOrRightStrafe(FVector Location);
 
     void RotateToTarget(FRotator Rotation, float DeltaTime);
 
-    void MoveToTargetLeftOrRightStrafe(FVector Location);
+   
+
+    UFUNCTION(BlueprintCallable)
+    void MoveToLocation(FVector TargetLocation);
 
 protected:
     virtual void BeginPlay() override;
@@ -83,6 +84,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* TextRenderComponent;
 
+
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     float MaxDistanceToMoveTheBall = 3000.0f;
 
@@ -95,12 +97,13 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float RotationSpeed = 5.0f;
 
+    UFUNCTION()
+    void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
+
 private:
     void CheckMoveToBallForShootingPos();
     void MoveToBallAndShoot();
-    void MoveToTargetTick();
-    void MoveToBallTick();
-
+    
     void MessageToPassedPlayer();
     void InitTextRenderComponent();
     void UpdateTextComponent();
@@ -114,10 +117,9 @@ private:
     bool PlayerHaveBall           = false;
 
     FVector MoveToTargetNoRotVec        = FVector::Zero();
-    FVector MoveToTargetPositionVec     = FVector::Zero();
     bool bMoveToTargetLeftOrRightStrafe = false;
-    bool bMoveToTarget                  = false;
-    bool bMoveToBall                     = false;
-    bool bMoveToPassEnd                 = false;
+    bool bMoveToLocationComplete        = false;
+
+
     float MoveToTargetGoalLenght        = 0.0f;
 };

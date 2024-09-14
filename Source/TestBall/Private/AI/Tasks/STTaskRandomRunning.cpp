@@ -24,7 +24,7 @@ EStateTreeRunStatus USTTaskRandomRunning::Tick(FStateTreeExecutionContext& Conte
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        Player->MoveToTarget(NewLocation);
+        Player->MoveToLocation(NewLocation);
     }
 
     if (Player->GetActorLocation().Equals(NewLocation, 20.0f))

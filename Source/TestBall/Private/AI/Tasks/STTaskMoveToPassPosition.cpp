@@ -18,12 +18,12 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::EnterState(FStateTreeExecutionCon
 
         if (Player->GetBallComputeDataComponent()->IsBallMovingAway())
         {
-            Player->MoveToBall();
+            Player->MoveToLocation(Player->GetBallComputeDataComponent()->GetBallLocation());
         }
         else
         {
             FVector TargetToPass = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
-            Player->MoveToTarget(TargetToPass);
+            Player->MoveToLocation(TargetToPass);
         }
     }
 

@@ -11,7 +11,7 @@ EStateTreeRunStatus USTTaskTBMoveToBall::Tick(FStateTreeExecutionContext& Contex
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        Player->MoveToTarget(Player->GetBallComputeDataComponent()->GetBallLocation());
+        Player->MoveToLocation(Player->GetBallComputeDataComponent()->GetBallLocation());
     }
 
     if (Player->IsMoveToBallComplete())
