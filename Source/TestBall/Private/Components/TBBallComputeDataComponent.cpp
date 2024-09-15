@@ -235,12 +235,9 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
 
 FVector UTBBallComputeDataComponent::GetBallLocationOverTime(float Time)
 {
-
-    FVector BallLocation            = GetBallLocation();
-    FVector BallVelocity            = GetBallVelocity();
-    FVector VecBallAddVell          = BallLocation + BallVelocity;
-
-    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallLocation, VecBallAddVell, 1.0f, FColor::Cyan, 0.0f, 3.0f);
+    FVector BallLocation   = GetBallLocation();
+    FVector BallVelocity   = GetBallVelocity();
+    FVector VecBallAddVell = BallLocation + BallVelocity;
 
     FVector Result = BallLocation + (BallVelocity * Time);
     UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallLocation, Result, 1.0f, FColor::Red, 0.0f, 3.0f);

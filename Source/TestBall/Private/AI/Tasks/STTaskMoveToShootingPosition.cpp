@@ -16,8 +16,8 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::EnterState(
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-        FVector Target = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
-        Player->MoveToLocation(Target);
+        TargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
+        Player->MoveToLocation(TargetLocation);
     }
 
     Super::EnterState(Context, Transition);
@@ -29,7 +29,12 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-
+        FVector NewTargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
+        if ((NewTargetLocation - TargetLocation).Length() > 300.0f)
+        {
+            Player->MoveToLocation(NewTargetLocation);
+            TargetLocation = NewTargetLocation;
+        }
         if (Player->IsMoveToLocationComplete())
         {
             FinishTask();
