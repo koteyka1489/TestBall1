@@ -25,7 +25,7 @@ public:
     void HandleOnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
         const FHitResult& Hit);
 
-    float GetSpeedInFrame() { return Speed; }
+    float GetSpeed() { return Speed; }
 
 
 protected:

@@ -22,8 +22,6 @@ void UTBBallComputeDataComponent::BeginPlay()
     Super::BeginPlay();
 }
 
-
-
 FVector UTBBallComputeDataComponent::GetBallLocation()
 {
     if (Ball)
@@ -170,7 +168,6 @@ void UTBBallComputeDataComponent::CheckBallLocation()
     }
 }
 
-
 FVector UTBBallComputeDataComponent::GetVecPlayerToBall()
 {
     if (Player)
@@ -238,12 +235,15 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
 
 FVector UTBBallComputeDataComponent::GetBallLocationOverTime(float Time)
 {
-    FVector BallLocation = GetBallLocation();
-    FVector BallVelocity = GetBallVelocity();
-    FVector VecBallToBallDest = (BallLocation + BallVelocity) - BallLocation;
-    
 
+    FVector BallLocation            = GetBallLocation();
+    FVector BallVelocity            = GetBallVelocity();
+    FVector VecBallAddVell          = BallLocation + BallVelocity;
 
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallLocation, VecBallAddVell, 1.0f, FColor::Cyan, 0.0f, 3.0f);
 
-    return FVector::Zero();
+    FVector Result = BallLocation + (BallVelocity * Time);
+    UKismetSystemLibrary::DrawDebugArrow(GetWorld(), BallLocation, Result, 1.0f, FColor::Red, 0.0f, 3.0f);
+
+    return Result;
 }

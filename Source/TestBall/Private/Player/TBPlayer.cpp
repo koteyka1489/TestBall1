@@ -37,8 +37,6 @@ ATBPlayer::ATBPlayer()
 
     AutoPossessAI     = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ATBAIController::StaticClass();
-    
-    
 }
 
 void ATBPlayer::BeginPlay()
@@ -62,12 +60,10 @@ void ATBPlayer::Tick(float DeltaTime)
     if (bMoveToTargetLeftOrRightStrafe) MoveToTargetLeftOrRightStrafeTick();
 }
 
-
 bool ATBPlayer::IsMoveToLocationComplete()
 {
     return bMoveToLocationComplete;
 }
-
 
 bool ATBPlayer::IsCanTakeBall()
 {
@@ -82,20 +78,15 @@ bool ATBPlayer::IsTakeBallComplete()
     return PlayerAnimationComponent->IsTakeBallAnimationExecuted() && IsPlayerHaveBall();
 }
 
-
 ABall1* ATBPlayer::GetBallPtr()
 {
     return BallComputeDataComponent->GetBallPtr();
 }
 
-
-
 void ATBPlayer::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
 {
     bMoveToLocationComplete = true;
 }
-
-
 
 void ATBPlayer::SetRotationPlayerOnBall()
 {
@@ -133,7 +124,6 @@ void ATBPlayer::MoveToLocation(FVector TargetLocation)
 
     BallComputeDataComponent->GetBallLocationOverTime(TimeToLocation);
 
-
     bMoveToLocationComplete       = false;
     ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
     if (AIController)
@@ -161,8 +151,6 @@ void ATBPlayer::MessageToPassedPlayer()
     PassedPlayer->GetPlayerStateComponent()->SetPlayerState(EPlayerState::TakePassingBall);
 }
 
-
-
 void ATBPlayer::MoveToTargetLeftOrRightStrafeTick()
 {
     if ((MoveToTargetNoRotVec - GetActorLocation()).Length() <= 10.0f)
@@ -187,7 +175,7 @@ void ATBPlayer::MoveToTargetLeftOrRightStrafeTick()
 
 float ATBPlayer::GetTimeMoveToLocation(FVector Location)
 {
-    FVector VecToTarget = Location - GetActorLocation();
+    FVector VecToTarget     = Location - GetActorLocation();
     float LengthVecToTarget = VecToTarget.Length();
     float PlayerSpeed       = GetMovementComponent()->GetMaxSpeed();
     return LengthVecToTarget / PlayerSpeed;
