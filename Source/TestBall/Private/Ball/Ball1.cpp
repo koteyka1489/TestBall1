@@ -36,12 +36,43 @@ FVector ABall1::GetBallPhysicVelocity()
 void ABall1::BeginPlay()
 {
     Super::BeginPlay();
+    PrevBallLocation = GetActorLocation();
 }
 
 // Called every frame
 void ABall1::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    CalcBallSpeed(DeltaTime);
+
+    PrevBallLocation = GetActorLocation();
+
+    FString Message2 = FString::Printf(TEXT("DELTA TIME - %f"), DeltaTime);
+    GEngine->AddOnScreenDebugMessage(40, 1, FColor::Red, Message2);
+
+    FString Message = FString::Printf(TEXT("SPEED  BALL IN FRAME - %f"), Speed);
+    GEngine->AddOnScreenDebugMessage(41, 1, FColor::Red, Message);
+
+}
+
+void ABall1::CalcBallSpeed(float DeltaTime)
+{
+    if (PrevBallLocation == GetActorLocation())
+    {
+        Speed  = 0.0f;
+    }
+    else
+    {
+        FVector VectoPrevLoc = PrevBallLocation - GetActorLocation();
+        if (VectoPrevLoc.Length() <= 0.1f)
+        {
+            Speed  = 0.0f;
+        }
+        else
+        {
+            Speed  = VectoPrevLoc.Length() / DeltaTime;
+        }
+    }
 }
 
 void ABall1::HandleOnHit(
@@ -65,7 +96,8 @@ void ABall1::HandleOnHit(
             PlayerReadyToShot = PlayerAnimationComponent->IsShootAnimationExecuted();
             PlayerStopingBall = PlayerAnimationComponent->IsStopingBall();
             PlayerPassing     = PlayerAnimationComponent->IsPassAnimationExecuted();
-            PlayerTakingBall  = PlayerAnimationComponent->IsTakeBallAnimationExecuted() || Player->GetPlayerStateComponent()->GetPlayerState() == EPlayerState::TakePassingBall;
+            PlayerTakingBall  = PlayerAnimationComponent->IsTakeBallAnimationExecuted() ||
+                               Player->GetPlayerStateComponent()->GetPlayerState() == EPlayerState::TakePassingBall;
         }
     }
 
@@ -122,7 +154,7 @@ void ABall1::HandleOnHit(
         StaticMeshComponent->SetPhysicsLinearVelocity(LinVel);
         StaticMeshComponent->SetPhysicsAngularVelocityInDegrees(FVector::Zero());
         Player->OnBallTaked();
-        
+
         return;
     }
 }

@@ -6,8 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Ball1.generated.h"
 
-
-
 class UStaticMeshComponent;
 class UTBStaticMeshComponent;
 
@@ -17,7 +15,6 @@ class TESTBALL_API ABall1 : public AActor
     GENERATED_BODY()
 
 public:
-
     ABall1();
     UTBStaticMeshComponent* GetStaticMeshComponent() { return StaticMeshComponent; }
 
@@ -28,6 +25,7 @@ public:
     void HandleOnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
         const FHitResult& Hit);
 
+    float GetSpeedInFrame() { return Speed; }
 
 
 protected:
@@ -39,5 +37,9 @@ protected:
 public:
     virtual void Tick(float DeltaTime) override;
 
-    
+private:
+    void CalcBallSpeed(float DeltaTime);
+    float Speed       = 0.0f;
+
+    FVector PrevBallLocation = FVector::Zero();
 };

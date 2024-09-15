@@ -22,11 +22,7 @@ void UTBBallComputeDataComponent::BeginPlay()
     Super::BeginPlay();
 }
 
-void UTBBallComputeDataComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) 
-{
-    CalcBallSpeed(DeltaTime); 
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
+
 
 FVector UTBBallComputeDataComponent::GetBallLocation()
 {
@@ -174,10 +170,6 @@ void UTBBallComputeDataComponent::CheckBallLocation()
     }
 }
 
-void UTBBallComputeDataComponent::CalcBallSpeed(float DeltaTime)
-{
-
-}
 
 FVector UTBBallComputeDataComponent::GetVecPlayerToBall()
 {
@@ -244,20 +236,13 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
     return false;
 }
 
-FVector UTBBallComputeDataComponent::GetBallLocationInTime(float Time)
+FVector UTBBallComputeDataComponent::GetBallLocationOverTime(float Time)
 {
     FVector BallLocation = GetBallLocation();
     FVector BallVelocity = GetBallVelocity();
     FVector VecBallToBallDest = (BallLocation + BallVelocity) - BallLocation;
-    float TimeToBallDest      = 0.0f;
-
-    if (BallVelocity.Length() != 0.0f)
-    {
-        TimeToBallDest = VecBallToBallDest.Length() / BallVelocity.Length();
-    }
     
-    FString Message4 = FString::Printf(TEXT("Ball SPEED - %f"), TimeToBallDest);
-    GEngine->AddOnScreenDebugMessage(33, 1, FColor::Green, Message4);
+
 
 
     return FVector::Zero();
