@@ -53,21 +53,25 @@ void UTBPlayerAnimationComponent::ShootBall()
 
 void UTBPlayerAnimationComponent::TakeBall()
 {
-    if (Ball && TakeBallAnimMontage)
+    if (Ball && TakeBallAnimMontage && !IsTakeBallAnimationExecuted())
     {
         TakeBallAnimationExecuted = true;
         PlayAnimMontage(TakeBallAnimMontage);
     }
 }
 
-void UTBPlayerAnimationComponent::PlayAnimMontage(UAnimMontage* Montage)
+float UTBPlayerAnimationComponent::GetDurationTakeBallAnimMontage()
 {
-    Player->PlayAnimMontage(Montage);
+    return TakeBallAnimMontage->GetPlayLength();
+}
+
+float UTBPlayerAnimationComponent::PlayAnimMontage(UAnimMontage* Montage)
+{
+    return Player->PlayAnimMontage(Montage);
 }
 
 void UTBPlayerAnimationComponent::InitAnimationNotify()
 {
-
     if (!ShotAnimMontage || !PassAnimMontage || !TakeBallAnimMontage) return;
     InitShotAnimNotify();
     InitPassAnimNotify();

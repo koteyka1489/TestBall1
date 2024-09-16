@@ -256,3 +256,21 @@ bool UTBBallComputeDataComponent::IsBallMoving()
         return true;
     }
 }
+
+float UTBBallComputeDataComponent::GetTimeBallReachTarget(FVector TargetLocation)
+{
+    FVector VecBallToTarget = TargetLocation - GetBallLocation();
+    FVector VecBallToTargetNormalize = VecBallToTarget.GetSafeNormal();
+
+    FVector BallVelocity    = GetBallVelocity();
+    FVector BallVelocityNormalize = BallVelocity.GetSafeNormal();
+
+    if (VecBallToTargetNormalize.Dot(BallVelocityNormalize) >= 0.75f)
+    {
+        return VecBallToTarget.Length() / BallVelocity.Length();
+    }
+    else
+    {
+        return -1.0f;
+    }
+}

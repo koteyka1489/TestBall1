@@ -90,6 +90,8 @@ public:
 
     bool IsBallMoving();
 
+    float GetTimeBallReachTarget(FVector TargetLocation);
+
 protected:
     virtual void BeginPlay() override;
 

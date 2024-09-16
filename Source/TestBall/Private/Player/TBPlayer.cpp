@@ -67,10 +67,20 @@ bool ATBPlayer::IsMoveToLocationComplete()
 
 bool ATBPlayer::IsCanTakeBall()
 {
-    float DistanceToBall = BallComputeDataComponent->GetDistanceToBall();
+    float DistanceToBall         = BallComputeDataComponent->GetDistanceToBall();
+    float TimeToBallCome         = BallComputeDataComponent->GetTimeBallReachTarget(GetActorLocation());
+    float DurationAnimMontage    = PlayerAnimationComponent->GetDurationTakeBallAnimMontage();
+    bool IsTimeToPlayAnimMontage = TimeToBallCome >= 0.0f && TimeToBallCome <= DurationAnimMontage * 0.8f;
 
-    return DistanceToBall < MaxDistanceToStartTakeBall && DistanceToBall > MinDistanceToStartTakeBall &&
-           !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
+
+    FString Message = FString::Printf(TEXT("TIME TO BALL COME %f"), TimeToBallCome);
+    GEngine->AddOnScreenDebugMessage(1, 0.0f, FColor::Red, Message);
+
+    FString Message1 = FString::Printf(TEXT("IsTimeToPlayAnimMontage %s"), IsTimeToPlayAnimMontage ? TEXT("TRUE") : TEXT("FALSE"));
+    GEngine->AddOnScreenDebugMessage(2, 0.0f, FColor::Red, Message1);
+
+
+    return IsTimeToPlayAnimMontage && !PlayerAnimationComponent->IsTakeBallAnimationExecuted();
 }
 
 bool ATBPlayer::IsTakeBallComplete()
@@ -126,10 +136,9 @@ void ATBPlayer::MoveToLocation(FVector TargetLocation)
     }
 }
 
-
 void ATBPlayer::MoveToMovingBall(FVector TargetLocation)
 {
-    float TimeToLocation = GetTimeMoveToLocation(TargetLocation);
+    float TimeToLocation               = GetTimeMoveToLocation(TargetLocation);
     FVector NewLocationBasedtravelTime = BallComputeDataComponent->GetBallLocationOverTime(TimeToLocation);
 
     bMoveToLocationComplete       = false;

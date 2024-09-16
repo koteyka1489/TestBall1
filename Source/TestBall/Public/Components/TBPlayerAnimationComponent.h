@@ -35,6 +35,8 @@ public:
     void ShootBall();
     void TakeBall();
 
+    float GetDurationTakeBallAnimMontage();
+
 protected:
     virtual void BeginPlay() override;
 
@@ -54,7 +56,7 @@ protected:
     float PassBallDistance = 50.0f;
 
 private:
-    void PlayAnimMontage(UAnimMontage* Montage);
+    float PlayAnimMontage(UAnimMontage* Montage);
     void InitAnimationNotify();
     void InitShotAnimNotify();
     void InitPassAnimNotify();
