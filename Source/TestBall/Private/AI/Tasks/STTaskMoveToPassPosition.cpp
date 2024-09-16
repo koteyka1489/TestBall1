@@ -15,14 +15,14 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::EnterState(FStateTreeExecutionCon
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
-
-        if (Player->GetBallComputeDataComponent()->IsBallMovingAway())
+        TargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
+        if (Player->GetBallComputeDataComponent()->IsBallMoving())
         {
-            Player->MoveToLocation(Player->GetBallComputeDataComponent()->GetBallLocation());
+            Player->MoveToMovingBall(TargetLocation);
         }
         else
         {
-            Player->MoveToLocation(Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition());
+            Player->MoveToLocation(TargetLocation);
         }
     }
 
@@ -33,11 +33,22 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::EnterState(FStateTreeExecutionCon
 EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
 {
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
-
-    if (Player->IsMoveToLocationComplete())
+    if (Player)
     {
-        FinishTask();
+        FVector NewTargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
+        if ((NewTargetLocation - TargetLocation).Length() > 200.0f)
+        {
+            TargetLocation = NewTargetLocation;
+            Player->MoveToMovingBall(TargetLocation);
+            
+        }
+        if (Player->IsMoveToLocationComplete())
+        {
+            FinishTask();
+        }
     }
+
+    
 
     Super::Tick(Context, DeltaTime);
     return RunStatus;

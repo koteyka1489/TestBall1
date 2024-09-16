@@ -17,7 +17,14 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::EnterState(
     if (Player)
     {
         TargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
-        Player->MoveToLocation(TargetLocation);
+        if (Player->GetBallComputeDataComponent()->IsBallMoving())
+        {
+            Player->MoveToMovingBall(TargetLocation);
+        }
+        else
+        {
+            Player->MoveToLocation(TargetLocation);
+        }
     }
 
     Super::EnterState(Context, Transition);
@@ -30,7 +37,7 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     if (Player)
     {
         FVector NewTargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
-        if ((NewTargetLocation - TargetLocation).Length() > 300.0f)
+        if ((NewTargetLocation - TargetLocation).Length() > 200.0f)
         {
             Player->MoveToLocation(NewTargetLocation);
             TargetLocation = NewTargetLocation;

@@ -88,6 +88,8 @@ public:
 
     FVector GetBallLocationOverTime(float Time);
 
+    bool IsBallMoving();
+
 protected:
     virtual void BeginPlay() override;
 

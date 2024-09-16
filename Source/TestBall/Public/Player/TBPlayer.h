@@ -64,6 +64,8 @@ public:
     UFUNCTION(BlueprintCallable)
     void MoveToLocation(FVector TargetLocation);
 
+    void MoveToMovingBall(FVector TargetLocation);
+
 protected:
     virtual void BeginPlay() override;
 

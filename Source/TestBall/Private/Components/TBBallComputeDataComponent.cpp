@@ -244,3 +244,15 @@ FVector UTBBallComputeDataComponent::GetBallLocationOverTime(float Time)
 
     return Result;
 }
+
+bool UTBBallComputeDataComponent::IsBallMoving()
+{
+    if (Ball->GetVelocity().Length() <= 20.0f)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}

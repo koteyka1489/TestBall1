@@ -90,7 +90,6 @@ void ATBPlayer::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Ty
 
 void ATBPlayer::SetRotationPlayerOnBall()
 {
-
     if (bSetRotationPlayerOnBall)
     {
         APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
@@ -119,9 +118,18 @@ void ATBPlayer::MoveToTargetLeftOrRightStrafe(FVector Location)
 
 void ATBPlayer::MoveToLocation(FVector TargetLocation)
 {
-    float TimeToLocation = GetTimeMoveToLocation(TargetLocation);
-    GEngine->AddOnScreenDebugMessage(3, 5.0f, FColor::Green, FString::Printf(TEXT("TIME to Location - %f"), TimeToLocation));
+    bMoveToLocationComplete       = false;
+    ATBAIController* AIController = Cast<ATBAIController>(this->GetController());
+    if (AIController)
+    {
+        AIController->MoveToLocation(TargetLocation);
+    }
+}
 
+
+void ATBPlayer::MoveToMovingBall(FVector TargetLocation)
+{
+    float TimeToLocation = GetTimeMoveToLocation(TargetLocation);
     FVector NewLocationBasedtravelTime = BallComputeDataComponent->GetBallLocationOverTime(TimeToLocation);
 
     bMoveToLocationComplete       = false;
