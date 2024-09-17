@@ -126,8 +126,6 @@ void UTBPlayerAnimationComponent::OnShootAnimationFinished()
 void UTBPlayerAnimationComponent::OnPassAnimationFinished()
 {
     PassAnimationExecuted = false;
-
-    GEngine->AddOnScreenDebugMessage(2, 3, FColor::Red, TEXT("Pass Animation Finished"));
 }
 
 void UTBPlayerAnimationComponent::OnTakeBallAnimationFinished()

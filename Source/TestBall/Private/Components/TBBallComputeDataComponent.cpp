@@ -227,7 +227,6 @@ bool UTBBallComputeDataComponent::IsBallMovingAway()
     float DotPlayerForwardAndBallVel = BallVelocityNormalize.Dot(Player->GetActorForwardVector());
     if (DotPlayerForwardAndBallVel > 0.1f && BallVelocity.Length() > BallVelocityMaxLenght)
     {
-        GEngine->AddOnScreenDebugMessage(12, 1, FColor::Cyan, TEXT("IsBallMovingAway TRUE"));
         return true;
     }
     return false;
@@ -259,10 +258,10 @@ bool UTBBallComputeDataComponent::IsBallMoving()
 
 float UTBBallComputeDataComponent::GetTimeBallReachTarget(FVector TargetLocation)
 {
-    FVector VecBallToTarget = TargetLocation - GetBallLocation();
+    FVector VecBallToTarget          = TargetLocation - GetBallLocation();
     FVector VecBallToTargetNormalize = VecBallToTarget.GetSafeNormal();
 
-    FVector BallVelocity    = GetBallVelocity();
+    FVector BallVelocity          = GetBallVelocity();
     FVector BallVelocityNormalize = BallVelocity.GetSafeNormal();
 
     if (VecBallToTargetNormalize.Dot(BallVelocityNormalize) >= 0.75f)
