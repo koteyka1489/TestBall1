@@ -37,12 +37,15 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
     if (Player)
     {
         FVector NewTargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToShootBallPosition();
-        if ((NewTargetLocation - TargetLocation).Length() > 200.0f)
+        if ((NewTargetLocation - TargetLocation).Length() > 500.0f)
         {
             Player->MoveToLocation(NewTargetLocation);
             TargetLocation = NewTargetLocation;
         }
-        if (Player->IsMoveToLocationComplete())
+
+        bool PlayerCloseBallForPass =
+            Player->GetBallComputeDataComponent()->IsPlayerCloseBallForMotion(Player->GetPlayerAnimationComponent()->GetPassBallDistance());
+        if (Player->IsMoveToLocationComplete() && PlayerCloseBallForPass)
         {
             FinishTask();
         }

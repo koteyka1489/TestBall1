@@ -92,6 +92,8 @@ public:
 
     float GetTimeBallReachTarget(FVector TargetLocation);
 
+    bool IsPlayerCloseBallForMotion(float DistanceMotion);
+
 protected:
     virtual void BeginPlay() override;
 

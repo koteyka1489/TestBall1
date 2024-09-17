@@ -36,7 +36,7 @@ EStateTreeRunStatus USTTaskMoveToPassPosition::Tick(FStateTreeExecutionContext& 
     if (Player)
     {
         FVector NewTargetLocation = Player->GetBallComputeDataComponent()->FindVecMoveToPassBallPosition();
-        if ((NewTargetLocation - TargetLocation).Length() > 200.0f)
+        if ((NewTargetLocation - TargetLocation).Length() > 500.0f)
         {
             TargetLocation = NewTargetLocation;
             Player->MoveToMovingBall(TargetLocation);
