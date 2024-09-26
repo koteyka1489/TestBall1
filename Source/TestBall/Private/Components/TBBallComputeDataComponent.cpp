@@ -56,7 +56,7 @@ FVector UTBBallComputeDataComponent::FindVecMoveToShootBallPosition()
         FVector VecToBall     = GetVecPlayerToBall();
         float VecToBallLenght = VecToBall.Length();
 
-        float ShootTheBallDistance = Player->GetPlayerAnimationComponent()->GetShootTheBallDistance();
+        float ShootTheBallDistance = Player->GetPlayerAnimationComponent()->GetShootBallDistance();
 
         float GoalVecLenght = VecToBallLenght - ShootTheBallDistance + (ShootTheBallDistance / 3);
 
@@ -158,7 +158,7 @@ void UTBBallComputeDataComponent::CheckBallLocation()
     VectorToBall    = GetVecPlayerToBall();
     float VecLenght = VectorToBall.Length();
 
-    if (VecLenght >= Player->GetPlayerAnimationComponent()->GetShootTheBallDistance() && VecLenght <= Player->GetMaxDistanceToMoveTheBall())
+    if (VecLenght >= Player->GetPlayerAnimationComponent()->GetShootBallDistance() && VecLenght <= Player->GetMaxDistanceToMoveTheBall())
     {
         BallIsCloseLocation = true;
     }
@@ -277,6 +277,6 @@ float UTBBallComputeDataComponent::GetTimeBallReachTarget(FVector TargetLocation
 bool UTBBallComputeDataComponent::IsPlayerCloseBallForMotion(float DistanceMotion)
 {
     float DistancePlayerToBall = (GetBallLocation() - Player->GetActorLocation()).Length();
-    float DistanceMotionAddCorrection = DistanceMotion + 10.0f;
+    float DistanceMotionAddCorrection = DistanceMotion + 40.0f;
     return DistancePlayerToBall <= DistanceMotionAddCorrection;
 }

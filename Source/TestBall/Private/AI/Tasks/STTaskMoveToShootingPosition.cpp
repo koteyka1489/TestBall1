@@ -43,9 +43,9 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
             TargetLocation = NewTargetLocation;
         }
 
-        bool PlayerCloseBallForPass =
-            Player->GetBallComputeDataComponent()->IsPlayerCloseBallForMotion(Player->GetPlayerAnimationComponent()->GetPassBallDistance());
-        if (Player->IsMoveToLocationComplete() && PlayerCloseBallForPass)
+        bool PlayerCloseBallForShoot =
+            Player->GetBallComputeDataComponent()->IsPlayerCloseBallForMotion(Player->GetPlayerAnimationComponent()->GetShootBallDistance());
+        if (Player->IsMoveToLocationComplete() && PlayerCloseBallForShoot)
         {
             FinishTask();
         }

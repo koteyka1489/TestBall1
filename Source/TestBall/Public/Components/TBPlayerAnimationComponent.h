@@ -24,7 +24,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Ball")
     void SetStoppingBall(bool inState) { StopingBall = inState; }
 
-    float GetShootTheBallDistance() const { return ShootTheBallDistance; }
+    float GetShootBallDistance() const { return ShootTheBallDistance; }
     float GetPassBallDistance() const { return PassBallDistance; }
 
     bool IsShootAnimationExecuted() const { return ShootAnimationExecuted; }
