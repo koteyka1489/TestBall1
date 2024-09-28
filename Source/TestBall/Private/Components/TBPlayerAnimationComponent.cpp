@@ -42,7 +42,8 @@ void UTBPlayerAnimationComponent::ShootBall()
 {
     if (!Ball || !ShotAnimMontage) return;
 
-    if (BallComputeDataComponent->GetDistanceToBall() <= (ShootTheBallDistance + 50.0f) && !ShootAnimationExecuted)
+    
+    if (!ShootAnimationExecuted)
     {
         ReadyToShoot = true;
         Player->SetRotationPlayerOnBall();

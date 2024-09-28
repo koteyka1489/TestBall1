@@ -13,6 +13,8 @@ EStateTreeRunStatus USTTaskShootBallToCage::EnterState(FStateTreeExecutionContex
     const auto Player = Cast<ATBPlayer>(GetOwnerActor(Context));
     if (Player)
     {
+
+        
         Player->GetPlayerAnimationComponent()->ShootBall();
     }
     Super::EnterState(Context, Transition);

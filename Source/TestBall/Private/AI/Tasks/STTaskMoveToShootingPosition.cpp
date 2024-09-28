@@ -49,6 +49,13 @@ EStateTreeRunStatus USTTaskMoveToShootingPosition::Tick(FStateTreeExecutionConte
         {
             FinishTask();
         }
+        FString Message =
+            FString::Printf(TEXT("IsMoveToLocationComplete - %s"), Player->IsMoveToLocationComplete() ? TEXT("TRUE") : TEXT("FALSE"));
+        GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Emerald, Message);
+
+         FString Message1 = FString::Printf(TEXT("PlayerCloseBallForShoot - %s"), PlayerCloseBallForShoot ? TEXT("TRUE") : TEXT("FALSE"));
+        GEngine->AddOnScreenDebugMessage(2, 3.0f, FColor::Emerald, Message1);
+
     }
 
     Super::Tick(Context, DeltaTime);

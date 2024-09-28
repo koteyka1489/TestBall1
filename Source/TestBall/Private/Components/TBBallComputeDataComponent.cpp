@@ -278,5 +278,12 @@ bool UTBBallComputeDataComponent::IsPlayerCloseBallForMotion(float DistanceMotio
 {
     float DistancePlayerToBall = (GetBallLocation() - Player->GetActorLocation()).Length();
     float DistanceMotionAddCorrection = DistanceMotion + ShotBallDistanceCorrection;
+
+    FString Message1 = FString::Printf(TEXT("DistancePlayerToBall - %f"), DistancePlayerToBall);
+    GEngine->AddOnScreenDebugMessage(3, 3.0f, FColor::Emerald, Message1);
+
+    FString Message2 = FString::Printf(TEXT("DistanceMotionAddCorrection - %f"), DistanceMotionAddCorrection);
+    GEngine->AddOnScreenDebugMessage(4, 3.0f, FColor::Emerald, Message2);
+
     return DistancePlayerToBall <= DistanceMotionAddCorrection;
 }
