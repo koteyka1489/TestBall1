@@ -112,9 +112,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
     float BallVelocityMaxLenght = 50.0f;
 
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TakeBall")
     float MaxTackebleLenght = 1000.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")
+    float ShotBallDistanceCorrection = 50.0f;
 
 private:
     void CheckBallLocationAndDirection();
@@ -127,5 +129,4 @@ private:
     TObjectPtr<ATBPlayer> Player = nullptr;
 
     FVector VectorToBall = FVector::ZeroVector;
-
 };

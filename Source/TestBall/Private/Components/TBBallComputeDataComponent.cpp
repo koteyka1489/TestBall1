@@ -277,6 +277,6 @@ float UTBBallComputeDataComponent::GetTimeBallReachTarget(FVector TargetLocation
 bool UTBBallComputeDataComponent::IsPlayerCloseBallForMotion(float DistanceMotion)
 {
     float DistancePlayerToBall = (GetBallLocation() - Player->GetActorLocation()).Length();
-    float DistanceMotionAddCorrection = DistanceMotion + 40.0f;
+    float DistanceMotionAddCorrection = DistanceMotion + ShotBallDistanceCorrection;
     return DistancePlayerToBall <= DistanceMotionAddCorrection;
 }
