@@ -96,8 +96,9 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void InitializeComponent() override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ball")
     ABall1* Ball = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting")

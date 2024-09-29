@@ -14,12 +14,22 @@ UTBBallComputeDataComponent::UTBBallComputeDataComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
     Player                            = Cast<ATBPlayer>(GetOwner());
-    Ball                              = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
 }
 
 void UTBBallComputeDataComponent::BeginPlay()
 {
     Super::BeginPlay();
+    
+}
+
+void UTBBallComputeDataComponent::InitializeComponent() 
+{
+    
+    Ball   = Cast<ABall1>(UGameplayStatics::GetActorOfClass(GetWorld(), ABall1::StaticClass()));
+
+    check(Player);
+    check(Ball);
+    Super::InitializeComponent();
 }
 
 FVector UTBBallComputeDataComponent::GetBallLocation()
